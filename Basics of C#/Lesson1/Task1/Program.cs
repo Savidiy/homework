@@ -17,7 +17,25 @@ namespace Task1
     {
         static void Main(string[] args)
         {
+            #region Task 1
+            Console.WriteLine("=Анкета=");
+            Console.WriteLine("Введите ваше имя:");
+            string name = Console.ReadLine();
+            Console.WriteLine("Введите вашу фамилию:");
+            string lastname = Console.ReadLine();
+            Console.WriteLine("Введите ваш возраст:");
+            string age = Console.ReadLine();
+            Console.WriteLine("Введите ваш рост в сантиметрах:");
+            string heigth = Console.ReadLine();
+            Console.WriteLine("Введите ваш вес в килограммах:");
+            string weigth = Console.ReadLine();
 
+            Console.WriteLine();
+            Console.Write("Вас зовут " + name + " " + lastname + ".");
+            Console.Write(" Ваш возраст {0}.", age);
+            Console.WriteLine($" Ваш рост {heigth} см. Ваш вес {weigth} кг.");
+            Console.ReadKey();
+            #endregion
         }
     }
 }

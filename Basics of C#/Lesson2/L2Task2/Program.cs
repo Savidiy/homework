@@ -13,9 +13,37 @@ namespace L2Task2
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("= Задание 2: Сосчитать количество цифр в числе =\n");
 
+            while (true)
+            {
+                Console.Write("Введите целое число\n>");
+                int a = Convert.ToInt32(Console.ReadLine());
+                int n = DigitsCount(a);
+                string e = n == 1 ? "ы" : "";
+                Console.WriteLine($"{a} сотоит из {n} цифр{e}.\n");
+            }
         }
 
-
+        static int DigitsCount(int num)
+        {
+            if (num < 0)
+            {
+                num = -num;
+            }
+            if (num == 0)
+            {
+                return 1;
+            } 
+            
+            int i = 1;
+            int dec = 10;
+            while (num >= dec)
+            {
+                dec = dec * 10;
+                i++;
+            }
+            return i;
+        }
     }
 }

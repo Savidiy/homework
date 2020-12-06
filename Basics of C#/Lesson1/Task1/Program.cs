@@ -60,13 +60,18 @@ namespace Task1
             Console.Write("Y2 = ");
             double y2 = Convert.ToDouble(Console.ReadLine());
 
-            double dist = Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
+            double dist = DistanceBetween2Points(x1, y1, x2, y2);
             Console.WriteLine($"Расстояние между точками ({x1}:{y1}) и ({x2}:{y2}) равно {dist:f2}.");
             #endregion
 
 
             Console.ReadKey();
 
+        }
+
+        static double DistanceBetween2Points(double x1, double y1, double x2, double y2)
+        {
+            return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
         }
     }
 }

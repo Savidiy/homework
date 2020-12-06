@@ -19,7 +19,7 @@ namespace Task1
             //б) используя форматированный вывод;
             //в) *используя вывод со знаком $.
 
-            Console.WriteLine("=Анкета=");
+            Console.WriteLine("=Задача 1: Анкета=");
             Console.Write("Введите ваше имя:\n>");
             string name = Console.ReadLine();
             Console.Write("Введите вашу фамилию:\n>");
@@ -39,6 +39,8 @@ namespace Task1
 
             #region Task 2
             //2.Ввести вес и рост человека. Рассчитать и вывести индекс массы тела(ИМТ) по формуле I = m / (h * h); где m — масса тела в килограммах, h — рост в метрах
+
+            Console.WriteLine("\n=Задача 2: Индекс массы тела=");
             float m = float.Parse(weigth);
             float h = float.Parse(heigth) / 100;//конвертируем см в метры
             float imt = m / (h * h);
@@ -49,7 +51,7 @@ namespace Task1
             //3.
             //а) Написать программу, которая подсчитывает расстояние между точками с координатами x1, y1 и x2,y2 по формуле r = Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2).Вывести результат, используя спецификатор формата .2f(с двумя знаками после запятой);
             //б) *Выполните предыдущее задание, оформив вычисления расстояния между точками в виде метода;
-            Console.WriteLine();
+            Console.WriteLine("\n=Задача 3: Расстояние между точками=");
             Console.WriteLine("Чтобы рассчитать расстояние между точками, введите их координаты:");
             Console.Write("X1 = ");
             double x1 = Convert.ToDouble(Console.ReadLine());
@@ -64,7 +66,7 @@ namespace Task1
             Console.WriteLine($"Расстояние между точками ({x1}:{y1}) и ({x2}:{y2}) равно {dist:f2}.");
             #endregion
 
-
+            Console.Write("\nНажмите любую клавишу");
             Console.ReadKey();
 
         }

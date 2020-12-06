@@ -35,14 +35,17 @@ namespace Task1
             Console.Write("Вас зовут " + name + " " + lastname + ".");
             Console.Write(" Ваш возраст {0}.", age);
             Console.WriteLine($" Ваш рост {heigth} см. Ваш вес {weigth} кг.");
-            Console.ReadKey();
             #endregion
 
             #region Task 2
             //2.Ввести вес и рост человека. Рассчитать и вывести индекс массы тела(ИМТ) по формуле I = m / (h * h); где m — масса тела в килограммах, h — рост в метрах
-
-
+            float m = float.Parse(weigth);
+            float h = float.Parse(heigth) / 100;//конвертируем см в метры
+            float imt = m / (h * h);
+            Console.WriteLine($"Ваш индекс массы тела (ИМТ) равен {imt:F1}.") ;
             #endregion
+
+            Console.ReadKey();
 
         }
     }

@@ -49,6 +49,19 @@ namespace Task1
             //3.
             //а) Написать программу, которая подсчитывает расстояние между точками с координатами x1, y1 и x2,y2 по формуле r = Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2).Вывести результат, используя спецификатор формата .2f(с двумя знаками после запятой);
             //б) *Выполните предыдущее задание, оформив вычисления расстояния между точками в виде метода;
+            Console.WriteLine();
+            Console.WriteLine("Чтобы рассчитать расстояние между точками, введите их координаты:");
+            Console.Write("X1 = ");
+            double x1 = Convert.ToDouble(Console.ReadLine());
+            Console.Write("Y1 = ");
+            double y1 = Convert.ToDouble(Console.ReadLine());
+            Console.Write("X2 = ");
+            double x2 = Convert.ToDouble(Console.ReadLine());
+            Console.Write("Y2 = ");
+            double y2 = Convert.ToDouble(Console.ReadLine());
+
+            double dist = Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
+            Console.WriteLine($"Расстояние между точками ({x1}:{y1}) и ({x2}:{y2}) равно {dist:f2}.");
             #endregion
 
 

@@ -85,7 +85,9 @@ namespace Task1
             a = a + b;
             b = a - b;
             a = a - b;
-            Console.WriteLine($"б) Мы снова поменяли их местами, но без помощи третьей перменной. Теперь А={a}, а В={b}.");
+            Console.WriteLine($"б) Мы снова их поменяли, но без помощи третьей перменной. Теперь А={a}, а В={b}.");
+            Console.WriteLine("Нажмите любую клавишу для продолжения.");
+            Console.ReadKey();
             #endregion
 
             #region Task 5
@@ -93,13 +95,26 @@ namespace Task1
             //а) Написать программу, которая выводит на экран ваше имя, фамилию и город проживания.
             //б) Сделать задание, только вывод организуйте в центре экрана
             //в) *Сделать задание б с использованием собственных методов(например, Print(string ms, int x, int y)
+            Console.Clear();
             Console.WriteLine("\n=Задача 5: Вывод текста в центре экрана=");
+
+            Console.Write("В каком городе вы живете?\n>");
+            string city = Console.ReadLine();
+            string text = $"Вы {name} {lastname}. {city} ваш город проживания.";
+            PrintLine(text, (Console.WindowWidth - text.Length) / 2, Console.WindowHeight/2);
             #endregion
 
             Console.Write("\nНажмите любую клавишу");
             Console.ReadKey();
 
         }
+
+        static void PrintLine(string text, int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.WriteLine(text);
+        }
+
 
         static double DistanceBetween2Points(double x1, double y1, double x2, double y2)
         {

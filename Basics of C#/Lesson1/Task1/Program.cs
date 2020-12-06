@@ -72,6 +72,20 @@ namespace Task1
             //б) *без использования третьей переменной.
             Console.WriteLine("\n=Задача 4: Обмен значениями переменных=");
 
+            Console.Write("Введите целое число А=");
+            int a = Convert.ToInt32( Console.ReadLine());
+            Console.Write("Введите целое число B=");
+            int b = Convert.ToInt32(Console.ReadLine());
+
+            int c = a;
+            a = b;
+            b = c;
+            Console.WriteLine($"а) Мы поменяли их местами с помощью третьей перменной. Теперь А={a}, а В={b}.");
+
+            a = a + b;
+            b = a - b;
+            a = a - b;
+            Console.WriteLine($"б) Мы снова поменяли их местами, но без помощи третьей перменной. Теперь А={a}, а В={b}.");
             #endregion
 
             Console.Write("\nНажмите любую клавишу");

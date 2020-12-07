@@ -14,15 +14,38 @@ namespace L2Task6
     {
         static void Main(string[] args)
         {
-            DateTime startTime = DateTime.Now;
 
-            Console.WriteLine("Начинаю подсчет количества «Хороших» чисел в диапазоне от 1 до 1 000 000 000.");
-            #region Расчеты
+            // propeties
+            int start = 1;
+            //int start = 75;
+            //int max = 50000000;
+            int max = 1000000000;
+
+            Console.WriteLine($"Начинаю подсчет количества «Хороших» чисел в диапазоне от {start} до {max:N0}.");
+
+            //Вариант расчетов номер 3, самый быстрый
+            for (int i = 3; i <= 3; i++)
+            {
+                Console.WriteLine($"\nВариант расчета №{i}");
+                DateTime startTime = DateTime.Now;
+
+                int count = GoodNumbersVariant(start, max, i);
+
+                DateTime endTime = DateTime.Now;
+                TimeSpan delta = endTime.Subtract(startTime);
+                Console.WriteLine($"Количество хороших чисел {count:N0}.");
+                Console.WriteLine($"Расчеты заняли {delta.Minutes:d2}:{delta.Seconds:d2}.{delta.Milliseconds:d3}.");
+            }
+
+            Console.Write("Нажмите любую клавишу");
+            Console.ReadKey();
+        }
+
+        static int GoodNumbersVariant(int start, int max, int variant)
+        {
+
             int count = 0;
             int procent = -1;
-            int start = 1;
-            // int max = 10000000;
-            int max = 1000000000;
             int border = 0;
 
             long digitSum = SumOfDigits(start);
@@ -31,95 +54,99 @@ namespace L2Task6
             for (long i = start; i <= max;)
             {
                 //15 sec without logic in IsGoodNumber
-                //variant 1: count 61 574 510 with use only isGoodNumber 5 min 3 sec
+                //variant 1: count 61 574 510 with use only isGoodNumber 5 min
                 //variant 2: count 61 574 510 with use isGoodNumber on tenth numbers 50 sec
                 //variant 3: count 61 574 510 with increment SumOfDigits numbers 20 sec
                 #region Variant 3
-                if (i % digitSum == 0)
+                if (variant == 3)
                 {
-                    count++;
-                }
-
-                i++;
-                ten++;
-
-                if (ten == 10)
-                {
-                    long zeroCount = 0;
-                    long divider = 1;
-                    long remains = i;
-
-                    while (divider <= i)
+                    if (i % digitSum == 0)
                     {
-                        long mod = remains / divider - (remains / (divider * 10)) * 10;
-                        if (mod == 0)
-                        {
-                            zeroCount ++;
-                        } else
-                        {
-                            //count zero defore first digit
-                            break;
-                        }
-                        remains -= mod * divider;
-                        divider *= 10;
+                        count++;
                     }
-                    digitSum = digitSum - zeroCount * 9 + 1;
-                    if (digitSum <= 0)
+
+                    i++;
+                    ten++;
+
+                    //особый учет при переходе с 9 на 0
+                    if (ten == 10)
+                    {
+                        long zeroCount = 0;
+                        long divider = 1;
+                        long remains = i;
+
+                        //расчет количества нулей подряд справа до первой цифры
+                        while (divider <= i)
+                        {
+                            long mod = remains / divider - (remains / (divider * 10)) * 10;
+                            if (mod == 0)
+                            {
+                                zeroCount++;
+                            }
+                            else
+                            {
+                                //count zero defore first digit
+                                break;
+                            }
+                            remains -= mod * divider;
+                            divider *= 10;
+                        }
+                        //коррекция суммы чисел
+                        digitSum = digitSum - zeroCount * 9 + 1;
                         ten = 0;
-                    ten = 0;
-                }
-                else
-                {
-                    digitSum += 1;
+                    }
+                    else
+                    {
+                        digitSum += 1;
+                    }
                 }
                 #endregion
 
                 #region Variant 2
-                //if (i % digitSum == 0)
-                //{
-                //    count++;
-                //}
+                if (variant == 2)
+                {
+                    if (i % digitSum == 0)
+                    {
+                        count++;
+                    }
 
-                //i++;
+                    i++;
 
-                //if (i % 10 == 0)
-                //{
-                //    digitSum = SumOfDigits(i);
-                //}
-                //else
-                //{
-                //    digitSum += 1;
-                //}
+                    if (i % 10 == 0)
+                    {
+                        digitSum = SumOfDigits(i);
+                    }
+                    else
+                    {
+                        digitSum += 1;
+                    }
+                }
                 #endregion
 
                 #region Variant 1
-                //if (IsGoodNumber(i))
-                //{
-                //    count++;
-                //}
-                //i++;
+                if (variant == 1)
+                {
+                    if (IsGoodNumber(i))
+                    {
+                        count++;
+                    }
+                    i++;
+                }
                 #endregion
 
-                //progree bar does not take many time ~300 mills
+                //progress bar does not take many time ~300 mills
                 if (i > border)
                 {
                     procent++;
                     border = max / 100 * (procent + 1);
-                    Console.SetCursorPosition(0, 1);
-                    Console.WriteLine($"{procent}%");
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.Write($"{procent}%");
                 }
             }
-            #endregion
-
-            DateTime endTime = DateTime.Now;
-            TimeSpan delta = endTime.Subtract(startTime);
-
-            Console.WriteLine($"Количество хороших чисел {count}.");
-            Console.WriteLine($"Расчеты заняли {delta.Minutes:d2}:{delta.Seconds:d2}.{delta.Milliseconds:d3} ({delta.Ticks} тиков).");
-            Console.Write("Нажмите любую клавишу");
-            Console.ReadKey();
+            Console.WriteLine();
+            return count;
         }
-                
+
         /// <summary>
         /// Хорошим называется число, которое делится на сумму своих цифр. 
         /// </summary>
@@ -133,7 +160,6 @@ namespace L2Task6
             long digitSum = SumOfDigits(k);
             return k % digitSum == 0;
         }
-
         static long SumOfDigits(long k)
         {
             long digitSum = 0;

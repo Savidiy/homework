@@ -94,25 +94,12 @@ namespace L2Task5
         static int StringToIntSafe(string t, bool onlyPositive = false)
         {
             string res = "";
-            if (t.Length == 0)
-                return 0;
 
             foreach (var c in t)
             {
-                switch (c)
+                if (char.IsDigit(c))
                 {
-                    case '0':
-                    case '1':
-                    case '2':
-                    case '3':
-                    case '4':
-                    case '5':
-                    case '6':
-                    case '7':
-                    case '8':
-                    case '9':
-                        res += c;
-                        break;
+                    res += c;
                 }
             }
 

@@ -25,34 +25,71 @@ namespace L2Task6
             int max = 1000000000;
             int border = 0;
 
-            IsGoodNumber(100);
-            IsGoodNumber(220);
-            IsGoodNumber(1);
-            IsGoodNumber(0);
-
             long digitSum = SumOfDigits(start);
+            int ten = start % 10;
 
             for (long i = start; i <= max;)
             {
                 //15 sec without logic in IsGoodNumber
                 //variant 1: count 61 574 510 with use only isGoodNumber 5 min 3 sec
                 //variant 2: count 61 574 510 with use isGoodNumber on tenth numbers 50 sec
-                #region Variant 2
+                //variant 3: count 61 574 510 with increment SumOfDigits numbers 20 sec
+                #region Variant 3
                 if (i % digitSum == 0)
                 {
                     count++;
                 }
 
                 i++;
+                ten++;
 
-                if (i % 10 == 0)
+                if (ten == 10)
                 {
-                    digitSum = SumOfDigits(i);
+                    long zeroCount = 0;
+                    long divider = 1;
+                    long remains = i;
+
+                    while (divider <= i)
+                    {
+                        long mod = remains / divider - (remains / (divider * 10)) * 10;
+                        if (mod == 0)
+                        {
+                            zeroCount ++;
+                        } else
+                        {
+                            //count zero defore first digit
+                            break;
+                        }
+                        remains -= mod * divider;
+                        divider *= 10;
+                    }
+                    digitSum = digitSum - zeroCount * 9 + 1;
+                    if (digitSum <= 0)
+                        ten = 0;
+                    ten = 0;
                 }
                 else
                 {
                     digitSum += 1;
                 }
+                #endregion
+
+                #region Variant 2
+                //if (i % digitSum == 0)
+                //{
+                //    count++;
+                //}
+
+                //i++;
+
+                //if (i % 10 == 0)
+                //{
+                //    digitSum = SumOfDigits(i);
+                //}
+                //else
+                //{
+                //    digitSum += 1;
+                //}
                 #endregion
 
                 #region Variant 1

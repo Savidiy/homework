@@ -21,7 +21,8 @@ namespace L2Task6
             int count = 0;
             int procent = -1;
             int start = 1;
-            int max = 10000000;//1000000000
+            // int max = 10000000;
+            int max = 1000000000;
             int border = 0;
 
             IsGoodNumber(100);
@@ -29,20 +30,44 @@ namespace L2Task6
             IsGoodNumber(1);
             IsGoodNumber(0);
 
-            for (var i = start; i <= max; i++)
+            long digitSum = SumOfDigits(start);
+
+            for (long i = start; i <= max;)
             {
                 //15 sec without logic in IsGoodNumber
-                //count 61 574 510 with use only isGoodNumber 5 min 3 sec
-                //
-                if (IsGoodNumber(i))
+                //variant 1: count 61 574 510 with use only isGoodNumber 5 min 3 sec
+                //variant 2: count 61 574 510 with use isGoodNumber on tenth numbers 50 sec
+                #region Variant 2
+                if (i % digitSum == 0)
                 {
                     count++;
                 }
+
+                i++;
+
+                if (i % 10 == 0)
+                {
+                    digitSum = SumOfDigits(i);
+                }
+                else
+                {
+                    digitSum += 1;
+                }
+                #endregion
+
+                #region Variant 1
+                //if (IsGoodNumber(i))
+                //{
+                //    count++;
+                //}
+                //i++;
+                #endregion
+
                 //progree bar does not take many time ~300 mills
                 if (i > border)
                 {
                     procent++;
-                    border = max / 100 * procent;
+                    border = max / 100 * (procent + 1);
                     Console.SetCursorPosition(0, 1);
                     Console.WriteLine($"{procent}%");
                 }
@@ -63,27 +88,33 @@ namespace L2Task6
         /// </summary>
         /// <param name="k"></param>
         /// <returns></returns>
-        static bool IsGoodNumber(int k)
+        static bool IsGoodNumber(long k)
         {
             k = Math.Abs(k);
             if (k == 0) 
                 return false;
+            long digitSum = SumOfDigits(k);
+            return k % digitSum == 0;
+        }
+
+        static long SumOfDigits(long k)
+        {
             long digitSum = 0;
             long divider = 1;
             long remains = k;
 
             while (divider <= k)
             {
-                long mod = remains / divider - (remains / (divider * 10 )) * 10;
+                long mod = remains / divider - (remains / (divider * 10)) * 10;
                 if (mod > 0)
                 {
                     digitSum += mod;
                 }
                 remains -= mod * divider;
                 divider *= 10;
-            }            
+            }
 
-            return k % digitSum == 0;
+            return digitSum;
         }
     }
 

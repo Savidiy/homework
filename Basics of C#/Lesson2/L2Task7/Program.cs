@@ -18,9 +18,9 @@ namespace L2Task7
             while (true)
             {
                 Console.SetCursorPosition(0, Console.CursorTop);
-                Console.Write("  Введите целое число А\n> ");
+                Console.Write("  Введите первое целое число\n> ");
                 int a = StringToIntSafe(Console.ReadLine());
-                Console.Write("  Введите целое число B\n> ");
+                Console.Write("  Введите второе целое число\n> ");
                 int b = StringToIntSafe(Console.ReadLine());
 
                 if (a > b)
@@ -30,9 +30,12 @@ namespace L2Task7
                     a = a - b;
                 }
 
-                Console.WriteLine("\n Последовательный вывод:");
+                //Part A
+                Console.Write("\n Последовательный вывод:\n ");
                 RepeatOutput(a, b);
 
+                //Part B
+                Console.WriteLine($"\n Сумма чисел диапазона = { RepeatSum(a, b)}");               
 
                 Console.WriteLine("\nНажмите любую клавишу для повторения\n");
                 Console.ReadKey();
@@ -45,6 +48,14 @@ namespace L2Task7
             Console.Write($"{a} ");
             if (a < b)
                 RepeatOutput(a + 1, b);
+        }
+
+        static int RepeatSum(int a, int b)
+        {
+            if (a == b)
+                return b;
+            else
+                return a + RepeatSum(a + 1, b);
         }
 
         static int StringToIntSafe(string t, bool onlyPositive = false)

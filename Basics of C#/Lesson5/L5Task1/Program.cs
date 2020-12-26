@@ -13,12 +13,15 @@ using System.Threading.Tasks;
 
 namespace L5Task1
 {
+    
 
     class LoginChecker
     {
+        public delegate bool CheckLogin(string login, out List<CheckExtention> extList);
+
         public const int minLength = 2;
         public const int maxLength = 10;
-        public const string availableChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const string availableChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         public enum CheckExtention {tooLong, tooShort, notEnglish, firstDigit }
         public static bool CheckLoginWithoutRegex(string login, out List<CheckExtention> extList)
@@ -51,10 +54,16 @@ namespace L5Task1
             }
             return isCorretLogin;
         }
-        public static bool CheckLoginWithRegex(string login)
+        public static bool CheckLoginWithRegex(string login, out List<CheckExtention> extList)
         {
-            Regex regex = new Regex(@"^((?!([0-9]))[A-Za-z0-9]{2,10})$");
+            extList = new List<CheckExtention>();
 
+            if (new Regex(@"^.{0,"+ (minLength - 1) + "}$").IsMatch(login)) extList.Add(CheckExtention.tooShort); // ^.{0,1}$
+            if (new Regex(@".{"+(maxLength + 1)+",}").IsMatch(login)) extList.Add(CheckExtention.tooLong); // .{11,}
+            if (new Regex(@"^[0-9]").IsMatch(login)) extList.Add(CheckExtention.firstDigit);
+            if (new Regex(@"[^A-Za-z0-9]").IsMatch(login)) extList.Add(CheckExtention.notEnglish);
+
+            Regex regex = new Regex(@"^((?!([0-9]))[A-Za-z0-9]{" + minLength + "," + maxLength + "})$"); // ^((?!([0-9]))[A-Za-z0-9]{2,10})$
             return regex.IsMatch(login);
         }
     }
@@ -63,6 +72,14 @@ namespace L5Task1
     {
         static void Main(string[] args)
         {
+
+            LoginChecker.CheckLogin checkLoginMethod;
+            bool useRegex = true;
+            if (useRegex)
+                checkLoginMethod = LoginChecker.CheckLoginWithRegex;
+            else
+                checkLoginMethod = LoginChecker.CheckLoginWithoutRegex;
+
             int minCursorPos = 2;
             int currentCursorPos = 2;
             string login = "";
@@ -70,7 +87,7 @@ namespace L5Task1
             bool showErrorMessage = false;
             List<LoginChecker.CheckExtention> checkExt = new List<LoginChecker.CheckExtention>();
             
-            bool isCorrectLogin = LoginChecker.CheckLoginWithoutRegex(login, out checkExt);
+            bool isCorrectLogin = checkLoginMethod(login, out checkExt);
 
             // input repeater
             bool editLogin = true;
@@ -81,9 +98,13 @@ namespace L5Task1
                     Console.Clear();
                     PrintLn("Выберите желаемый логин, учитывая следующие требования:");
                     PrintLnWithColorAndIf(
-                        $"- Он должен быть длиной от {LoginChecker.minLength} до {LoginChecker.maxLength} символов.",
+                        $"- Он должен быть длиной от {LoginChecker.minLength} символов.",
                         ConsoleColor.DarkGreen,
-                        checkExt.Contains(LoginChecker.CheckExtention.tooLong) == false && checkExt.Contains(LoginChecker.CheckExtention.tooShort) == false);
+                        checkExt.Contains(LoginChecker.CheckExtention.tooShort) == false);
+                    PrintLnWithColorAndIf(
+                        $"- Он должен быть длиной до {LoginChecker.maxLength} символов.",
+                        ConsoleColor.DarkGreen,
+                        checkExt.Contains(LoginChecker.CheckExtention.tooLong) == false);
                     PrintLnWithColorAndIf(
                         "- Содержать только буквы латинского алфавита или цифры.",
                         ConsoleColor.DarkGreen,
@@ -92,15 +113,16 @@ namespace L5Task1
                         "- При этом цифра не может быть первой.",
                         ConsoleColor.DarkGreen,
                         login.Length > 0 && checkExt.Contains(LoginChecker.CheckExtention.firstDigit) == false);
-
-                    Print("Проверка строки с помощью регулярного выражения: ");
-                    if (LoginChecker.CheckLoginWithRegex(login))
+                    
+                    if (useRegex)
                     {
-                        PrintLnWithColorAndIf("соответствует", ConsoleColor.Green, true);
+                        Print("Проверка С помощью регулярных выражений. ");
                     } else
                     {
-                        PrintLnWithColorAndIf("не соответствует", ConsoleColor.Red, true);
+                        Print("Проверка БЕЗ помощи регулярных выражений. ");
+
                     }
+                    PrintLn("Нажмите TAB для переключения.");
 
                     if (showErrorMessage == true)
                     {
@@ -161,10 +183,11 @@ namespace L5Task1
                         currentCursorPos = maxCursorPos;
                         break;
                     #endregion
-                    #region ignored keys
-                    case ConsoleKey.Tab: // ignore
+                    #region tab & enter
+                    case ConsoleKey.Tab:
+                        useRegex = !useRegex;
+                        needCheckLogin = true;
                         break;
-                    #endregion
                     case ConsoleKey.Enter:
                         if (isCorrectLogin)
                         {
@@ -177,6 +200,8 @@ namespace L5Task1
                             showErrorMessage = true;
                         }
                         break;
+                    #endregion
+                    #region input char
                     default: // input char
                         if (char.IsLetterOrDigit(input.KeyChar)
                             || char.IsWhiteSpace(input.KeyChar)
@@ -190,13 +215,20 @@ namespace L5Task1
                             needCheckLogin = true;
                         }
                         break;
+                    #endregion
                 }
                 #endregion
 
                 #region login check
                 if (needCheckLogin == true)
                 {
-                    isCorrectLogin = LoginChecker.CheckLoginWithoutRegex(login, out checkExt);
+
+                    if (useRegex)
+                        checkLoginMethod = LoginChecker.CheckLoginWithRegex;
+                    else
+                        checkLoginMethod = LoginChecker.CheckLoginWithoutRegex;
+
+                    isCorrectLogin = checkLoginMethod(login, out checkExt);
                     if (showErrorMessage == true && isCorrectLogin == true)
                         showErrorMessage = false;
                     updateDescription = true;

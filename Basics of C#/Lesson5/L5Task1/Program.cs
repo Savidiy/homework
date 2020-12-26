@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 /// Леонид Васильев
@@ -50,6 +51,12 @@ namespace L5Task1
             }
             return isCorretLogin;
         }
+        public static bool CheckLoginWithRegex(string login)
+        {
+            Regex regex = new Regex(@"^((?!([0-9]))[A-Za-z0-9]{2,10})$");
+
+            return regex.IsMatch(login);
+        }
     }
 
     class Program
@@ -85,6 +92,16 @@ namespace L5Task1
                         "- При этом цифра не может быть первой.",
                         ConsoleColor.DarkGreen,
                         login.Length > 0 && checkExt.Contains(LoginChecker.CheckExtention.firstDigit) == false);
+
+                    Print("Проверка строки с помощью регулярного выражения: ");
+                    if (LoginChecker.CheckLoginWithRegex(login))
+                    {
+                        PrintLnWithColorAndIf("соответствует", ConsoleColor.Green, true);
+                    } else
+                    {
+                        PrintLnWithColorAndIf("не соответствует", ConsoleColor.Red, true);
+                    }
+
                     if (showErrorMessage == true)
                     {
                         PrintLnWithColorAndIf("Ваш логин не соответствует всем требованиям! Попробуйте еще раз:", ConsoleColor.Red, true);
@@ -164,7 +181,7 @@ namespace L5Task1
                         if (char.IsLetterOrDigit(input.KeyChar)
                             || char.IsWhiteSpace(input.KeyChar)
                             || char.IsPunctuation(input.KeyChar)
-                            || char.IsSeparator(input.KeyChar))
+                            || char.IsSeparator(input.KeyChar))// не пропускает № # $ ^ +       не стал вылавливать
                         {
                             string firstString = login.Substring(0, currentCursorPos - minCursorPos);
                             string lastString = login.Substring(currentCursorPos - minCursorPos);

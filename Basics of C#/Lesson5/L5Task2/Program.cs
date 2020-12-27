@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 /// б) Удалить из сообщения все слова, которые заканчиваются на заданный символ. 
 ///     (Удаляем только слова (см. выше, остальные знаки должны остаться)
 /// в) Найти самое длинное слово сообщения.
+///     (Находим первое попавшееся)
 /// г) Сформировать строку с помощью StringBuilder из самых длинных слов сообщения.
+///     (Разделим пробелами для удобства чтения)
 /// Продемонстрируйте работу программы на текстовом файле с вашей программой.
 
 namespace L5Task2
@@ -23,7 +25,7 @@ namespace L5Task2
     {
         class Message
         {
-            static public string GetWordsShorterThanN (string text, int maxLength)
+            static public string GetWordsShorterThanNSimb (string text, int maxLength)
             {
                 StringBuilder result = new StringBuilder();
                 StringBuilder word = new StringBuilder();
@@ -63,9 +65,19 @@ namespace L5Task2
                         }
                     }
                 }
-                if (result.Length > 0)
+
+                if (wordIsStarted) // обработка последнего слова, перед окончанием файла
                 {
-                    result.Remove(result.Length - 1, 1); // убираем последний пробел 
+                    if (wordLength <= maxLength)
+                    {
+                        word.Append(" ");
+                        result.Append(word);
+                    }
+                }
+
+                if (result.Length > 0) // убираем последний пробел 
+                {
+                    result.Remove(result.Length - 1, 1); 
                 }
                 return result.ToString();
             }
@@ -105,6 +117,86 @@ namespace L5Task2
                         }
                     }
                 }
+                if (wordIsStarted) // обработка последнего слова, перед окончанием файла
+                {
+                    if (word[word.Length - 1] != cursedChar)
+                    {
+                        result.Append(word);
+                    }
+                }
+                return result.ToString();
+            }
+            static public string GetLongestWord(string text)
+            {
+                string longestWord = "";
+                StringBuilder word = new StringBuilder();
+                int maxWordLength = 0;
+                bool wordIsStarted = false;
+                foreach (var c in text)
+                {
+                    if (wordIsStarted)
+                    {
+                        if (char.IsLetterOrDigit(c))
+                        {
+                            word.Append(c);
+                        }
+                        else
+                        {
+                            if (word.Length > maxWordLength)
+                            {
+                                longestWord = word.ToString();
+                                maxWordLength = word.Length;
+                            }
+                            word.Clear();
+                            wordIsStarted = false;
+                        }
+                    }
+                    else
+                    {
+                        if (char.IsLetterOrDigit(c))
+                        {
+                            word.Append(c); 
+                            wordIsStarted = true;
+                        }
+                    }
+                }
+                return longestWord;
+            }
+            static public string GetAllLongestWords(string text)
+            {
+                StringBuilder word = new StringBuilder();
+                StringBuilder result = new StringBuilder();
+                //string longestWord = GetLongestWord(text);
+                int maxWordLength = GetLongestWord(text).Length;
+                bool wordIsStarted = false;
+                foreach (var c in text)
+                {
+                    if (wordIsStarted)
+                    {
+                        if (char.IsLetterOrDigit(c))
+                        {
+                            word.Append(c);
+                        }
+                        else
+                        {
+                            if (word.Length == maxWordLength)
+                            {
+                                result.Append(word);
+                                result.Append(' ');
+                            }
+                            word.Clear();
+                            wordIsStarted = false;
+                        }
+                    }
+                    else
+                    {
+                        if (char.IsLetterOrDigit(c))
+                        {
+                            word.Append(c);
+                            wordIsStarted = true;
+                        }
+                    }
+                }
                 return result.ToString();
             }
         }
@@ -138,7 +230,7 @@ namespace L5Task2
                             }
                         } while (isInt == false);
                         PrintLnWithColor("Результат работы метода:", ConsoleColor.DarkGreen);
-                        PrintLn(Message.GetWordsShorterThanN(text, maxLength));
+                        PrintLn(Message.GetWordsShorterThanNSimb(text, maxLength));
                         PrintLn();
                     }
                     #endregion
@@ -169,6 +261,22 @@ namespace L5Task2
                         } while (isOneLetterOrDigit == false);
                         PrintLnWithColor("Результат работы метода:", ConsoleColor.DarkGreen);
                         PrintLn(Message.RemoveWordsWithLastCharN(text, cursedChar));
+                        PrintLn();
+                    }
+                    #endregion
+                    #region Задание В
+                    {
+                        PrintLnWithColor("в) Найти самое длинное слово в сообщении.", ConsoleColor.DarkGreen);                        
+                        PrintLnWithColor("Результат работы метода:", ConsoleColor.DarkGreen);
+                        PrintLn(Message.GetLongestWord(text));
+                        PrintLn();
+                    }
+                    #endregion
+                    #region Задание Г
+                    {
+                        PrintLnWithColor("г) Формируем строку из самых длинных слов сообщения.", ConsoleColor.DarkGreen);
+                        PrintLnWithColor("Результат работы метода:", ConsoleColor.DarkGreen);
+                        PrintLn(Message.GetAllLongestWords(text));
                         PrintLn();
                     }
                     #endregion
@@ -207,3 +315,4 @@ namespace L5Task2
         }
     }
 }
+//проверка правильной обработки последнего слова: dddd

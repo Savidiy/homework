@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 /// Не понял какие методы С# подразумеваются в пункте А. 
 /// Не нашел стандартной функции, которая делает такую проверку, а все остальные решения подподают под пункт Б.
 /// first.Intersect(second) не учитывает повторение одних и тех же символов
+/// 
+/// Про использование неизменяемых строк прочитал только в условии четвертого задания переделывать 2 и 3 задачу не стал.
+
 
 namespace L5Task3
 {
@@ -42,7 +45,7 @@ namespace L5Task3
                 {
                     if (remainCharsFromB[i] == c)
                     {
-                        remainCharsFromB.Remove(i, 1);
+                        remainCharsFromB.Remove(i, 1); // со string было бы strB.Remove(i, 1)                        
                         isFinded = true;
                         break;
                     }

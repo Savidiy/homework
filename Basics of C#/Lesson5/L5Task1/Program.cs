@@ -19,7 +19,7 @@ namespace L5Task1
     {
         public delegate bool CheckLogin(string login, out List<CheckExtention> extList);
 
-        public const int minLength = 2;
+        public const int minLength = 2; // должна быть больше 0
         public const int maxLength = 10;
         const string availableChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -27,32 +27,24 @@ namespace L5Task1
         public static bool CheckLoginWithoutRegex(string login, out List<CheckExtention> extList)
         {
             extList = new List<CheckExtention>();
-            bool isCorretLogin = true;
+
             if (login.Length < minLength)
-            {
-                isCorretLogin = false;
                 extList.Add(CheckExtention.tooShort);
-            }
             else if (login.Length > maxLength)
-            {
-                isCorretLogin = false;
                 extList.Add(CheckExtention.tooLong);
-            }
+
             if (login.Length > 0 && char.IsDigit(login[0]))
-            {
-                isCorretLogin = false;
                 extList.Add(CheckExtention.firstDigit);
-            }
+
             foreach (var c in login)
             {
                 if (availableChars.Contains(c) == false)
                 {
-                    isCorretLogin = false;
                     extList.Add(CheckExtention.notEnglish);
                     break;
                 }
             }
-            return isCorretLogin;
+            return extList.Count == 0;
         }
         public static bool CheckLoginWithRegex(string login, out List<CheckExtention> extList)
         {

@@ -53,7 +53,7 @@ namespace L6Task1
 
 
 
-            static void Main(string[] args)
+        static void Main(string[] args)
         {
             // Создаем новый делегат и передаем ссылку на него в метод Table
             double a = 5;

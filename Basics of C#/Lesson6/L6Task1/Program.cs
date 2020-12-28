@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace L6Task1
 {
-    public delegate double Fun(double x);
+    public delegate double FunX(double x);
+    public delegate double FunAX(double a, double x);
 
     class Program
     {
-        public static void Table(Fun F, double x, double b)
+        public static void Table(FunX F, double x, double b)
         {
             Console.WriteLine("----- X ----- Y -----");
             while (x <= b)
@@ -24,26 +25,58 @@ namespace L6Task1
             }
             Console.WriteLine("---------------------");
         }
+        public static void TableAX(FunAX F, double a, double startX, double stepX, double maxX)
+        {
+            Console.WriteLine("----- X ----- Y -----");
+            double x = startX;
+            while (x <= maxX)
+            {
+                Console.WriteLine("| {0,8:0.000} | {1,8:0.000} |", x, F(a, x));
+                x += stepX;
+            }
+            Console.WriteLine("---------------------");
+        }
+
         // Создаем метод для передачи его в качестве параметра в Table
         public static double MyFunc(double x)
         {
             return x * x * x;
         }
+        public static double FuncAXSqrt(double a, double x)
+        {
+            return a * x * x;
+        }
+        public static double FuncAsinX(double a, double x)
+        {
+            return a * Math.Sin(x);
+        }
 
-        static void Main(string[] args)
+
+
+            static void Main(string[] args)
         {
             // Создаем новый делегат и передаем ссылку на него в метод Table
-            Console.WriteLine("Таблица функции MyFunc:");
-            // Параметры метода и тип возвращаемого значения, должны совпадать с делегатом
-            Table(new Fun(MyFunc), -2, 2);
-            Console.WriteLine("Еще раз та же таблица, но вызов организован по новому");
-            // Упрощение(c C# 2.0).Делегат создается автоматически.            
-            Table(MyFunc, -2, 2);
-            Console.WriteLine("Таблица функции Sin:");
-            Table(Math.Sin, -2, 2);      // Можно передавать уже созданные методы
-            Console.WriteLine("Таблица функции x^2:");
-            // Упрощение(с C# 2.0). Использование анонимного метода
-            Table(delegate (double x) { return x * x; }, 0, 3);
+            double a = 5;
+            Console.WriteLine($"Таблица функции {a}*x^2:");
+            TableAX(FuncAXSqrt, a, 0, 1, 6);
+
+            
+            a = 2;
+            Console.WriteLine($"\nТаблица функции {a}*sin(x):");
+            TableAX(FuncAsinX, a, -Math.PI, Math.PI / 4, Math.PI);
+
+            #region код из примера
+            //// Параметры метода и тип возвращаемого значения, должны совпадать с делегатом
+            //Table(new FunX(MyFunc), -2, 2);
+            //Console.WriteLine("Еще раз та же таблица, но вызов организован по новому");
+            //// Упрощение(c C# 2.0).Делегат создается автоматически.            
+            //Table(MyFunc, -2, 2);
+            //Console.WriteLine("Таблица функции Sin:");
+            //Table(Math.Sin, -2, 2);      // Можно передавать уже созданные методы
+            //Console.WriteLine("Таблица функции x^2:");
+            //// Упрощение(с C# 2.0). Использование анонимного метода
+            //Table(delegate (double x) { return x * x; }, 0, 3);
+            #endregion
 
             Console.Write("Нажмите любую клавишу для выхода");
             Console.ReadKey(true);

@@ -54,16 +54,17 @@ namespace L6Task3
             int magistr = 0;
             List<Student> list = new List<Student>();                             // Создаем список студентов
             DateTime dt = DateTime.Now;
-            StreamReader sr = new StreamReader("students_6.csv");
+            StreamReader sr = new StreamReader("students_1.csv");
             while (!sr.EndOfStream)
             {
                 try
                 {
                     string[] s = sr.ReadLine().Split(';');
                     // Добавляем в список новый экземпляр класса Student
-                    list.Add(new Student(s[0], s[1], s[2], s[3], s[4], int.Parse(s[5]), int.Parse(s[6]), int.Parse(s[7]), s[8]));
+
+                    list.Add(new Student(s[0], s[1], s[2], s[3], s[4], int.Parse(s[6]), int.Parse(s[5]), int.Parse(s[7]), s[8]));
                     // Одновременно подсчитываем количество бакалавров и магистров
-                    if (int.Parse(s[5]) < 5) bakalavr++; else magistr++;
+                    if (int.Parse(s[6]) < 5) bakalavr++; else magistr++;
                 }
                 catch (Exception e)
                 {
@@ -78,7 +79,7 @@ namespace L6Task3
             Console.WriteLine("Всего студентов:" + list.Count);
             Console.WriteLine("Магистров:{0}", magistr);
             Console.WriteLine("Бакалавров:{0}", bakalavr);
-            foreach (var v in list) Console.WriteLine(v.firstName);
+            //foreach (var v in list) Console.WriteLine(v.firstName);
             Console.WriteLine(DateTime.Now - dt);
             Console.ReadKey();
         }

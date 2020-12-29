@@ -39,9 +39,9 @@ namespace L7Task2
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnNewGame = new System.Windows.Forms.Button();
             this.btnAnswer = new System.Windows.Forms.Button();
             this.tbNumber = new System.Windows.Forms.TextBox();
-            this.btnNewGame = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbGirl)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -87,11 +87,12 @@ namespace L7Task2
             // tbHistory
             // 
             this.tbHistory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbHistory.Location = new System.Drawing.Point(3, 3);
             this.tbHistory.Multiline = true;
             this.tbHistory.Name = "tbHistory";
             this.tbHistory.ReadOnly = true;
+            this.tbHistory.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbHistory.Size = new System.Drawing.Size(502, 277);
             this.tbHistory.TabIndex = 0;
             this.tbHistory.TabStop = false;
@@ -155,6 +156,19 @@ namespace L7Task2
             this.label1.TabIndex = 2;
             this.label1.Text = "Ваше число";
             // 
+            // btnNewGame
+            // 
+            this.btnNewGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.btnNewGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnNewGame.Location = new System.Drawing.Point(272, 12);
+            this.btnNewGame.Name = "btnNewGame";
+            this.btnNewGame.Size = new System.Drawing.Size(120, 28);
+            this.btnNewGame.TabIndex = 1;
+            this.btnNewGame.Text = "Новая игра";
+            this.btnNewGame.UseVisualStyleBackColor = true;
+            this.btnNewGame.Visible = false;
+            this.btnNewGame.Click += new System.EventHandler(this.btnNewGame_Click);
+            // 
             // btnAnswer
             // 
             this.btnAnswer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -177,19 +191,6 @@ namespace L7Task2
             this.tbNumber.TabIndex = 0;
             this.tbNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbNumber_KeyDown);
-            // 
-            // btnNewGame
-            // 
-            this.btnNewGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.btnNewGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnNewGame.Location = new System.Drawing.Point(272, 12);
-            this.btnNewGame.Name = "btnNewGame";
-            this.btnNewGame.Size = new System.Drawing.Size(120, 28);
-            this.btnNewGame.TabIndex = 1;
-            this.btnNewGame.Text = "Новая игра";
-            this.btnNewGame.UseVisualStyleBackColor = true;
-            this.btnNewGame.Visible = false;
-            this.btnNewGame.Click += new System.EventHandler(this.btnNewGame_Click);
             // 
             // Form1
             // 

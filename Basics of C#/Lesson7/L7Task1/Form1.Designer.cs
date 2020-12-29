@@ -35,11 +35,12 @@ namespace L7Task1
             this.lblNumber = new System.Windows.Forms.Label();
             this.lblCommandCount = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.lblTargetNumber = new System.Windows.Forms.Label();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.MenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NewGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblTargetNumber = new System.Windows.Forms.Label();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.lblRecord = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -102,6 +103,29 @@ namespace L7Task1
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // MenuToolStripMenuItem
+            // 
+            this.MenuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewGameToolStripMenuItem,
+            this.ExitToolStripMenuItem});
+            this.MenuToolStripMenuItem.Name = "MenuToolStripMenuItem";
+            this.MenuToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.MenuToolStripMenuItem.Text = "Меню";
+            // 
+            // NewGameToolStripMenuItem
+            // 
+            this.NewGameToolStripMenuItem.Name = "NewGameToolStripMenuItem";
+            this.NewGameToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.NewGameToolStripMenuItem.Text = "&Новая игра";
+            this.NewGameToolStripMenuItem.Click += new System.EventHandler(this.NewGameToolStripMenuItem_Click);
+            // 
+            // ExitToolStripMenuItem
+            // 
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.ExitToolStripMenuItem.Text = "В&ыход";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            // 
             // lblTargetNumber
             // 
             this.lblTargetNumber.Location = new System.Drawing.Point(30, 43);
@@ -121,34 +145,21 @@ namespace L7Task1
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // MenuToolStripMenuItem
+            // lblRecord
             // 
-            this.MenuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NewGameToolStripMenuItem,
-            this.ExitToolStripMenuItem});
-            this.MenuToolStripMenuItem.Name = "MenuToolStripMenuItem";
-            this.MenuToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.MenuToolStripMenuItem.Text = "Меню";
-            // 
-            // NewGameToolStripMenuItem
-            // 
-            this.NewGameToolStripMenuItem.Name = "NewGameToolStripMenuItem";
-            this.NewGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.NewGameToolStripMenuItem.Text = "&Новая игра";
-            this.NewGameToolStripMenuItem.Click += new System.EventHandler(this.NewGameToolStripMenuItem_Click);
-            // 
-            // ExitToolStripMenuItem
-            // 
-            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ExitToolStripMenuItem.Text = "В&ыход";
-            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            this.lblRecord.Location = new System.Drawing.Point(27, 125);
+            this.lblRecord.Name = "lblRecord";
+            this.lblRecord.Size = new System.Drawing.Size(184, 23);
+            this.lblRecord.TabIndex = 8;
+            this.lblRecord.Text = "record";
+            this.lblRecord.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(314, 159);
+            this.Controls.Add(this.lblRecord);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblTargetNumber);
             this.Controls.Add(this.lblCommandCount);
@@ -184,6 +195,7 @@ namespace L7Task1
         private System.Windows.Forms.ToolStripMenuItem MenuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NewGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
+        private System.Windows.Forms.Label lblRecord;
     }
 }
 

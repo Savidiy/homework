@@ -24,6 +24,7 @@ namespace L7Task1
         readonly Random random;
         readonly int minValue = 11;
         readonly int maxValue = 60;
+        int record;
         readonly List<bool> actions; // true +1, false *2
 
         public Form1()
@@ -66,7 +67,7 @@ namespace L7Task1
             {
                 //btnCommand1.Enabled = false;
                 //btnCommand2.Enabled = false;
-                switch(new Form2(actions.Count).ShowDialog(this))
+                switch(new Form2(actions.Count, record).ShowDialog(this))
                 {
                     case DialogResult.OK:
                         NewGame();
@@ -98,8 +99,26 @@ namespace L7Task1
             btnCommand2.Enabled = true;
             actions.Clear();
             GetNewTargetNumber(minValue, maxValue);
+            record = CalcRecord(targetNumber);
+            lblRecord.Text = $"Рекорд: {record}";
             UpdateNumber(1, true);
-            MessageBox.Show(this, $"Получите число {targetNumber} за наименьшее количество команд", "Новая игра", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, $"Получите число {targetNumber} за наименьшее количество команд.\r\n+1 - увеливает ваше число на 1\r\nх2 - увеличивает ваше число в два раза. ", "Новая игра", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        int CalcRecord(int num)
+        {
+            int count = 0;
+            while (num > 1)
+            {
+                if (num % 2 == 1)
+                {
+                    num -= 1;
+                } else
+                {
+                    num /= 2;
+                }
+                count++;
+            }
+            return count;
         }
         void Reset()
         {

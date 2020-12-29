@@ -12,11 +12,15 @@ namespace L7Task1
 {
     public partial class Form2 : Form
     {
-        public Form2(int k)
+        public Form2(int k, int record)
         {
             InitializeComponent();
-            ;
-            lblText.Text = $"Поздравляю!\n\nВы справились за {k} действ{Program.GetWordEndByNumber("ие", "ия", "ий", k)}.\n\nЧто дальше?";
+            if (k < record)
+                lblText.Text = $"Поздравляю!\n\nВы побили рекорд за {k} действ{Program.GetWordEndByNumber("ие", "ия", "ий", k)}.\n\nЕще разок?";
+            else if (k == record)
+                lblText.Text = $"Отлично!\n\nВы как рекордсмен справились за {k} действ{Program.GetWordEndByNumber("ие", "ия", "ий", k)}.\n\nЧто дальше?";
+            else
+                lblText.Text = $"Хорошо!\n\nВы справились за {k} действ{Program.GetWordEndByNumber("ие", "ия", "ий", k)}.\n\nПопробуйте побить рекорд {record}.";
         }
 
         private void btnNewGame_Click(object sender, EventArgs e)

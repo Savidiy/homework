@@ -31,7 +31,8 @@ namespace L7Task2
         {
             magicNumber = random.Next(minValue, maxValue + 1);
             maxAttemt = (int)Math.Ceiling(Math.Log(maxValue - minValue + 2, 2)); // 7 значений 3 попытки, 8 значения 4 попытки
-            string text = $"Я загадала число от {minValue} до {maxValue}. Попробуй его угадать с {maxAttemt} попыт{GetWordEndByNumber("ки","ок","ок",maxAttemt)}.";
+            string text = $"Я загадала число от {minValue} до {maxValue}. ";
+            text += $"Попробуй его угадать с {maxAttemt} попыт{GetWordEndByNumber("ки","ок","ок",maxAttemt)}.";
 
             tbHistory.Clear();
             tbNumber.Visible = true;
@@ -107,21 +108,37 @@ namespace L7Task2
             if (text == "")
             {
                 SetPic(GirlPicEnum.Error);
-                GirlSay($"Ты думаешь я загадала ничего? Нет, число самое всамделишное!");
-                // И что это? Мнимая единица?
-                // Если ты имел ввиду 0, то я ебя не поняла.
+                string[] phrases = new string[]
+                {
+                    $"Ты думаешь я загадала ничего? Нет, число самое всамделишное!",
+                    "И что это? Мнимая единица?",
+                    "Если имелся ввиду 0, то можно было так и сказать."
+                };
+                GirlSay(phrases[random.Next(0, phrases.Length)]);
             }
             else if (int.TryParse(text, out num))
             {
                 if (num < minValue)
                 {
-                    SetPic(GirlPicEnum.Error);
-                    GirlSay($"Ты меня вообще слушал? Число должно быть больше {minValue - 1}.");
+                    SetPic(GirlPicEnum.Error); 
+                    string[] phrases = new string[]
+                    {
+                        $"Число должно быть больше {minValue - 1}. Я же сразу это сказала!",
+                        $"Я же сказала, что загадала число от {minValue} до {maxValue}.",
+                        $"Меня вообще слушают? Ответ точно больше {minValue - 1}."
+                    };
+                    GirlSay(phrases[random.Next(0, phrases.Length)]);
                 }
                 else if (num > maxValue)
                 {
                     SetPic(GirlPicEnum.Error);
-                    GirlSay($"С кем я разговариваю! Число должно быть не больше {maxValue}.");
+                    string[] phrases = new string[]
+                    {
+                        $"С кем я разговариваю! Число должно быть не больше {maxValue}.",
+                        $"Я же сказала, что загадала число от {minValue} до {maxValue}.",
+                        $"Меня вообще слушают? Ответ точно меньше {maxValue + 1}."
+                    };
+                    GirlSay(phrases[random.Next(0, phrases.Length)]);
                 }
                 else
                 {
@@ -129,7 +146,13 @@ namespace L7Task2
                     if (num == magicNumber)
                     {
                         SetPic(GirlPicEnum.Win);
-                        GirlSay($"Вау! Я и правда загадала {num}. Ты что мысли читаешь?", countOfAttempt);
+                        string[] phrases = new string[]
+                        {
+                            $"Вау! Я и правда загадала {num}. Ты что мысли читаешь?",
+                            $"В точку! Я загадала {num}. Повторим?",
+                            $"{num} это правильный ответ! Давай еще раз?"
+                        };
+                        GirlSay(phrases[random.Next(0, phrases.Length)], countOfAttempt);
                         // скрываем текстовое поле
                         tbNumber.Visible = false;
                         btnAnswer.Visible = false;
@@ -142,17 +165,35 @@ namespace L7Task2
                         if (num > magicNumber)
                         {
                             SetPic(GirlPicEnum.MyNumIsLess);
-                            GirlSay($"Я бы такое не загадала! {num} это же большое число!", countOfAttempt);
+                            string[] phrases = new string[]
+                            {
+                                $"Я бы такое не загадала! {num} слишком большое число!",
+                                $"Хей-хей полегче. Моё число меньше {num}.",
+                                $"{num} это много. Слишком много."
+                            };
+                            GirlSay(phrases[random.Next(0, phrases.Length)], countOfAttempt);
                         }
                         else
                         {
                             SetPic(GirlPicEnum.MyNumIsBigger);
-                            GirlSay($"Ха! {num}! Вот это мелочь ты придумал!", countOfAttempt);
+                            string[] phrases = new string[]
+                            {
+                                $"Ха! {num}! Вот это мелочь ты придумал!",
+                                $"Не мелочись! Моё число больше чем {num}.",
+                                $"Холодно. {num} слишком маленькое число."
+                            };
+                            GirlSay(phrases[random.Next(0, phrases.Length)], countOfAttempt);
                         }
                         if (countOfAttempt >= maxAttemt)
                         {
                             SetPic(GirlPicEnum.GameOver);
-                            GirlSay($"У тебя закончились попытки. Повезет в другой раз.");
+                            string[] phrases = new string[]
+                            {
+                                $"У тебя закончились попытки. Я загадала {magicNumber}. Еще разок?",
+                                $"Увы, тебе повезет в другой раз. Моё число было {magicNumber}.",
+                                $"{magicNumber}! {magicNumber}! Что так сложно угадать было? Давай еще раз?"
+                            };
+                            GirlSay(phrases[random.Next(0, phrases.Length)]);
                             // скрываем текстовое поле
                             tbNumber.Visible = false;
                             btnAnswer.Visible = false;
@@ -166,13 +207,22 @@ namespace L7Task2
             else if (double.TryParse(text, out double dd))
             {
                 SetPic(GirlPicEnum.Error);
-                GirlSay("Точно! Забыла сказать, что это целое число.");
+                GirlSay("Точно! Забыла сказать, что я загадала целое число.");
             }
             else
             {
                 SetPic(GirlPicEnum.Error);
-                GirlSay("Ты точно знаешь как выглядят цифры?");
-            }            
+                string[] phrases = new string[]
+                {
+                    "Ты точно знаешь как выглядят цифры?",
+                    $"Я загадала число и ты отгадывай число!",
+                    $"Ты что ли издеваешься надо мной?"
+                };
+                GirlSay(phrases[random.Next(0, phrases.Length)]);
+            }
+            // автопрокрутка
+            tbHistory.SelectionStart = tbHistory.Text.Length;
+            tbHistory.ScrollToCaret();
         }
 
 
@@ -196,6 +246,7 @@ namespace L7Task2
         {
             if (e.KeyCode == Keys.Enter)
             {
+                e.SuppressKeyPress = true;
                 GetAnswer();
             }
         }

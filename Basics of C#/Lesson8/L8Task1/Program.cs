@@ -16,6 +16,7 @@ using System.Windows.Forms;
 
 namespace L8Task1
 {
+
     static class Program
     {
         /// <summary>

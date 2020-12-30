@@ -44,8 +44,8 @@ namespace L8Task1
             this.tbQuestion.Name = "tbQuestion";
             this.tbQuestion.Size = new System.Drawing.Size(541, 81);
             this.tbQuestion.TabIndex = 0;
-            this.tbQuestion.Text = "Тут будет записан вопрос, нами задастся. Если несколько строк, то прокрутка, то п" +
-    "оле должно растягиваться вниз. фывыв фывв ы";
+            this.tbQuestion.Text = "Тут будет записан вопрос. Если несколько строк, то поле должно растягиваться вниз" +
+    ". \r\n";
             this.tbQuestion.TextChanged += new System.EventHandler(this.tbQuestiontText_TextChanged);
             this.tbQuestion.Enter += new System.EventHandler(this.tbQuestion_Enter);
             // 

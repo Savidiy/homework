@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace L8Task1
 {
@@ -49,7 +51,7 @@ namespace L8Task1
             {
                 var q = tblQuestions.Controls[0] as QuestEditRow;
 
-                if(q.QuestionText == "")
+                if (q.QuestionText == "")
                 {
                     MessageBox.Show("You can't delete the first question.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 } else
@@ -107,20 +109,114 @@ namespace L8Task1
         private void btnSave_Click(object sender, EventArgs e)
         {
 
-            tsStatusLabel.Text = $"tableW={tblQuestions.Width} panelW={panelForQuestions.Width} vsbW={vsbQuestions.Width} ";
         }
 
         private void tblQuestions_Resize(object sender, EventArgs e)
         {
             vsbQuestions.Visible = !panelForQuestions.VerticalScroll.Visible;
             tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
-            foreach(var obj in tblQuestions.Controls)
+            foreach (var obj in tblQuestions.Controls)
             {
                 if (obj != null)
                 {
                     var q = obj as QuestEditRow;
                     q.QuestionTextChanged();
                 }
+            }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutBox().ShowDialog();
+        }
+
+        void DeleteAllQuestions()
+        {
+            for (int i = tblQuestions.RowCount - 1; i > 0; i--)
+            {
+                var control = tblQuestions.GetControlFromPosition(0, i);
+                if (control != null)
+                {
+                    tblQuestions.Controls.RemoveAt(i);
+                }
+                tblQuestions.RowStyles.RemoveAt(i);
+            }
+            tblQuestions.RowCount = 1;
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show($"When creating a new database, all current questions will be deleted.\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        == DialogResult.Yes)
+            {
+                DeleteAllQuestions();
+
+                selectedRow = 0;
+
+                var q = tblQuestions.Controls[0] as QuestEditRow;
+                q.QuestionText = "";
+                q.TrueFalse = false;
+                q.tbQuestion.Focus();
+            }
+        }
+
+
+        void Save(string filename)
+        {
+            List<Question> questions = new List<Question>();
+
+            foreach(var obj in tblQuestions.Controls)
+            {
+                var q = obj as QuestEditRow;
+                questions.Add(new Question(q.QuestionText, q.TrueFalse));
+            }
+
+            SaveQuestionsToXml(filename, questions);
+
+        }
+
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var questions = LoadQuestionsFromXml("base");
+
+            MessageBox.Show($"Загружено {questions.Count} вопросов");
+
+            if(questions.Count > 0)
+            {
+                DeleteAllQuestions();
+
+                var q = tblQuestions.Controls[0] as QuestEditRow;
+                q.QuestionText = questions[0].Text;
+                q.TrueFalse = questions[0].TrueFalse;
+
+                for (int i = 1; i < questions.Count; i++)
+                {
+                    AddQuestion(questions[i].Text, questions[i].TrueFalse);
+                }
+
+                selectedRow = questions.Count;
+
+                q = tblQuestions.Controls[questions.Count - 1] as QuestEditRow;
+                q.tbQuestion.Focus();
+            }            
+        }
+
+        void SaveQuestionsToXml(string filename, List<Question> list)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
+            using (Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            {
+                xmlSerializer.Serialize(stream, list);
+            }
+        }
+
+        List<Question> LoadQuestionsFromXml(string filename)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
+            using(Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                 return xmlSerializer.Deserialize(stream) as List<Question>;
             }
         }
     }

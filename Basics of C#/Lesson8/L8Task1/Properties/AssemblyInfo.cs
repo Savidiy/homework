@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("L8Task1")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Question editor")]
+[assembly: AssemblyDescription("Question editor for the game True or False.\r\nStores questions in an XML file.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("L8Task1")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyProduct("Question editor")]
+[assembly: AssemblyCopyright("Copyright © Leonid Vasilev 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

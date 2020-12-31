@@ -8,7 +8,7 @@ namespace L8Task1
 {
 
     [Serializable]
-    class Question
+    public class Question
     {
         public string Text { set; get; }
         public bool TrueFalse { set; get; }

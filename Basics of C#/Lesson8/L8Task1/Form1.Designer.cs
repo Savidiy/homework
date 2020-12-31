@@ -36,6 +36,7 @@ namespace L8Task1
             this.btnAddQuestion = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,7 +45,7 @@ namespace L8Task1
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnDeleteQuestion = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblFilename = new System.Windows.Forms.Label();
             this.tblQuestions.SuspendLayout();
             this.panelForQuestions.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -63,20 +64,21 @@ namespace L8Task1
             this.tblQuestions.Name = "tblQuestions";
             this.tblQuestions.RowCount = 1;
             this.tblQuestions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblQuestions.Size = new System.Drawing.Size(798, 89);
+            this.tblQuestions.Size = new System.Drawing.Size(595, 85);
             this.tblQuestions.TabIndex = 1;
             this.tblQuestions.Resize += new System.EventHandler(this.tblQuestions_Resize);
             // 
             // questEditRow1
             // 
             this.questEditRow1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.questEditRow1.Location = new System.Drawing.Point(3, 3);
+            this.questEditRow1.Location = new System.Drawing.Point(1, 1);
+            this.questEditRow1.Margin = new System.Windows.Forms.Padding(1);
             this.questEditRow1.MinimumSize = new System.Drawing.Size(350, 26);
             this.questEditRow1.Name = "questEditRow1";
             this.questEditRow1.Number = 1;
             this.questEditRow1.Padding = new System.Windows.Forms.Padding(30, 1, 60, 1);
             this.questEditRow1.QuestionText = "";
-            this.questEditRow1.Size = new System.Drawing.Size(792, 83);
+            this.questEditRow1.Size = new System.Drawing.Size(593, 83);
             this.questEditRow1.TabIndex = 0;
             this.questEditRow1.TrueFalse = false;
             // 
@@ -92,14 +94,14 @@ namespace L8Task1
             this.panelForQuestions.Controls.Add(this.tblQuestions);
             this.panelForQuestions.Location = new System.Drawing.Point(0, 27);
             this.panelForQuestions.Name = "panelForQuestions";
-            this.panelForQuestions.Size = new System.Drawing.Size(856, 389);
+            this.panelForQuestions.Size = new System.Drawing.Size(653, 389);
             this.panelForQuestions.TabIndex = 2;
             // 
             // vsbQuestions
             // 
             this.vsbQuestions.Dock = System.Windows.Forms.DockStyle.Right;
             this.vsbQuestions.Enabled = false;
-            this.vsbQuestions.Location = new System.Drawing.Point(839, 0);
+            this.vsbQuestions.Location = new System.Drawing.Point(636, 0);
             this.vsbQuestions.Name = "vsbQuestions";
             this.vsbQuestions.Size = new System.Drawing.Size(17, 389);
             this.vsbQuestions.TabIndex = 2;
@@ -107,11 +109,12 @@ namespace L8Task1
             // btnAddQuestion
             // 
             this.btnAddQuestion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAddQuestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnAddQuestion.Location = new System.Drawing.Point(12, 428);
             this.btnAddQuestion.Name = "btnAddQuestion";
-            this.btnAddQuestion.Size = new System.Drawing.Size(90, 23);
+            this.btnAddQuestion.Size = new System.Drawing.Size(100, 24);
             this.btnAddQuestion.TabIndex = 3;
-            this.btnAddQuestion.Text = "Add question";
+            this.btnAddQuestion.Text = "Add &Question";
             this.btnAddQuestion.UseVisualStyleBackColor = true;
             this.btnAddQuestion.Click += new System.EventHandler(this.btnAddQuestion_Click);
             // 
@@ -122,7 +125,7 @@ namespace L8Task1
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(856, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(653, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -137,87 +140,106 @@ namespace L8Task1
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Text = "&File";
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Text = "&New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
-            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Text = "&Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
-            this.saveAsToolStripMenuItem.Text = "Save as";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsToolStripMenuItem.Text = "Save &as";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(109, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Text = "A&bout";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // btnDeleteQuestion
             // 
             this.btnDeleteQuestion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeleteQuestion.Location = new System.Drawing.Point(117, 428);
+            this.btnDeleteQuestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDeleteQuestion.Location = new System.Drawing.Point(123, 428);
             this.btnDeleteQuestion.Name = "btnDeleteQuestion";
-            this.btnDeleteQuestion.Size = new System.Drawing.Size(93, 23);
+            this.btnDeleteQuestion.Size = new System.Drawing.Size(100, 24);
             this.btnDeleteQuestion.TabIndex = 4;
-            this.btnDeleteQuestion.Text = "Delete #1";
+            this.btnDeleteQuestion.Text = "&Delete #1";
             this.btnDeleteQuestion.UseVisualStyleBackColor = true;
             this.btnDeleteQuestion.Click += new System.EventHandler(this.btnDeleteQuestion_Click);
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(751, 428);
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSave.Location = new System.Drawing.Point(545, 428);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(93, 23);
+            this.btnSave.Size = new System.Drawing.Size(100, 24);
             this.btnSave.TabIndex = 5;
-            this.btnSave.Text = "Save as";
+            this.btnSave.Text = "&Save";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
-            // newToolStripMenuItem
+            // lblFilename
             // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.newToolStripMenuItem.Text = "New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            this.lblFilename.AllowDrop = true;
+            this.lblFilename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblFilename.Location = new System.Drawing.Point(229, 429);
+            this.lblFilename.Name = "lblFilename";
+            this.lblFilename.Size = new System.Drawing.Size(310, 23);
+            this.lblFilename.TabIndex = 6;
+            this.lblFilename.Text = "lblFilename";
+            this.lblFilename.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.ClientSize = new System.Drawing.Size(856, 463);
+            this.ClientSize = new System.Drawing.Size(653, 463);
+            this.Controls.Add(this.lblFilename);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnDeleteQuestion);
             this.Controls.Add(this.btnAddQuestion);
             this.Controls.Add(this.panelForQuestions);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(420, 287);
+            this.MinimumSize = new System.Drawing.Size(460, 287);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Question Editor";
@@ -248,6 +270,7 @@ namespace L8Task1
         private System.Windows.Forms.VScrollBar vsbQuestions;
         private QuestEditRow questEditRow1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.Label lblFilename;
     }
 }
 

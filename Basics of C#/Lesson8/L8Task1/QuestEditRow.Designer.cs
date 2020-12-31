@@ -42,7 +42,7 @@ namespace L8Task1
             this.tbQuestion.Margin = new System.Windows.Forms.Padding(0);
             this.tbQuestion.Multiline = true;
             this.tbQuestion.Name = "tbQuestion";
-            this.tbQuestion.Size = new System.Drawing.Size(541, 81);
+            this.tbQuestion.Size = new System.Drawing.Size(541, 28);
             this.tbQuestion.TabIndex = 0;
             this.tbQuestion.Text = "Тут будет записан вопрос. Если несколько строк, то поле должно растягиваться вниз" +
     ". \r\n";
@@ -55,7 +55,7 @@ namespace L8Task1
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lblNumber.Location = new System.Drawing.Point(0, 1);
             this.lblNumber.Name = "lblNumber";
-            this.lblNumber.Size = new System.Drawing.Size(30, 81);
+            this.lblNumber.Size = new System.Drawing.Size(30, 28);
             this.lblNumber.TabIndex = 1;
             this.lblNumber.Text = "999";
             this.lblNumber.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -68,7 +68,7 @@ namespace L8Task1
             this.cbTrueFalse.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbTrueFalse.Location = new System.Drawing.Point(571, 0);
             this.cbTrueFalse.Name = "cbTrueFalse";
-            this.cbTrueFalse.Size = new System.Drawing.Size(60, 83);
+            this.cbTrueFalse.Size = new System.Drawing.Size(60, 30);
             this.cbTrueFalse.TabIndex = 1;
             this.cbTrueFalse.Text = "FALSE";
             this.cbTrueFalse.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -83,10 +83,11 @@ namespace L8Task1
             this.Controls.Add(this.cbTrueFalse);
             this.Controls.Add(this.lblNumber);
             this.Controls.Add(this.tbQuestion);
+            this.Margin = new System.Windows.Forms.Padding(1);
             this.MinimumSize = new System.Drawing.Size(350, 26);
             this.Name = "QuestEditRow";
             this.Padding = new System.Windows.Forms.Padding(30, 1, 60, 1);
-            this.Size = new System.Drawing.Size(631, 83);
+            this.Size = new System.Drawing.Size(631, 30);
             this.ResumeLayout(false);
             this.PerformLayout();
 

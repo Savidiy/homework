@@ -14,30 +14,37 @@ namespace L8Task1
 {
     public partial class Form1 : Form
     {
-        int selectedRow = 0;
+        int selectedRow = 0; // number of selected row (start from 0) to delete Button
+        string dbFilename = String.Empty;
+        bool isLoadingDatabaseProcess = false; // block Resize events then database loading
+        
         public Form1()
         {
             InitializeComponent();
             var q = tblQuestions.Controls[0] as QuestEditRow;
             q.QuestEditRowFocusedEvent += QuestEditRowFocused;
             tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
+            lblFilename.Text = dbFilename;
         }
 
         private void QuestEditRowFocused(object sender, EventArgs e)
         {
             selectedRow = (sender as QuestEditRow).Number - 1;
-            btnDeleteQuestion.Text = $"Delete #{selectedRow + 1}";
+            btnDeleteQuestion.Text = $"&Delete #{selectedRow + 1}"; // d - hotkey to delete
         }
 
         private void AddQuestion(string text, bool trueFalse)
         {
             tblQuestions.RowCount++;
             tblQuestions.RowStyles.Add(new RowStyle());
-            var q = new QuestEditRow(tblQuestions.RowCount, text, trueFalse);
+            var q = new QuestEditRow(tblQuestions.RowCount, text, trueFalse);            
+            tblQuestions.Controls.Add(q, 0, tblQuestions.RowCount - 1);
             q.QuestEditRowFocusedEvent += QuestEditRowFocused;
             q.Dock = DockStyle.Top;
-            tblQuestions.Controls.Add(q, 0, tblQuestions.RowCount - 1);
-            q.tbQuestion.Focus();
+            //selectedRow
+
+            if (isLoadingDatabaseProcess == false) // block Resize events then database loading
+                q.tbQuestion.Focus();
         }
 
         private void btnAddQuestion_Click(object sender, EventArgs e)
@@ -78,9 +85,12 @@ namespace L8Task1
                             if (tblQuestions.Controls[i] != null)
                                 (tblQuestions.Controls[i] as QuestEditRow).Number = i;
                         }
+
                         // remove question
-                        //var q = tblQuestions.Controls[selectedRow] as QuestEditRow;
+                        int saveSelectedRow = selectedRow; // if add some question with hotkey, then delete question with hotkey will be uncorrect question numbers
                         tblQuestions.Controls.RemoveAt(selectedRow);
+                        selectedRow = saveSelectedRow;
+
                         // move questions thwt below
                         for (int i = selectedRow + 1; i < tblQuestions.RowCount; i++)
                         {
@@ -91,6 +101,7 @@ namespace L8Task1
                             }
                         }
 
+                        // focus near question
                         tblQuestions.RowStyles.RemoveAt(selectedRow);
                         tblQuestions.RowCount--;
 
@@ -106,21 +117,19 @@ namespace L8Task1
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void tblQuestions_Resize(object sender, EventArgs e)
         {
-            vsbQuestions.Visible = !panelForQuestions.VerticalScroll.Visible;
-            tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
-            foreach (var obj in tblQuestions.Controls)
+            if (isLoadingDatabaseProcess == false)
             {
-                if (obj != null)
+                vsbQuestions.Visible = !panelForQuestions.VerticalScroll.Visible;
+                tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
+                foreach (var obj in tblQuestions.Controls)
                 {
-                    var q = obj as QuestEditRow;
-                    q.QuestionTextChanged();
+                    if (obj != null)
+                    {
+                        var q = obj as QuestEditRow;
+                        q.QuestionTextChanged();
+                    }
                 }
             }
         }
@@ -160,8 +169,43 @@ namespace L8Task1
             }
         }
 
+        bool LoadDatabase(string filename)
+        {
+            var questions = LoadQuestionsFromXml(filename);
 
-        void Save(string filename)
+            if (questions.Count > 0)
+            {
+                //MessageBox.Show($"Load {questions.Count} questions", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DeleteAllQuestions();
+
+                var q = tblQuestions.Controls[0] as QuestEditRow;
+                q.QuestionText = questions[0].Text;
+                q.TrueFalse = questions[0].TrueFalse;
+
+                isLoadingDatabaseProcess = true; // block Resize events then database loading
+                this.SuspendLayout();
+                for (int i = 1; i < questions.Count; i++)
+                {
+                    AddQuestion(questions[i].Text, questions[i].TrueFalse);
+                }
+                isLoadingDatabaseProcess = false; // block Resize events then database loading
+                this.ResumeLayout();
+                tblQuestions_Resize(this, EventArgs.Empty);
+
+                selectedRow = questions.Count;
+
+                q = tblQuestions.Controls[questions.Count - 1] as QuestEditRow;
+                q.tbQuestion.Focus();
+                return true;
+            } 
+            else
+            {
+                MessageBox.Show($"There are no questions in the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+        }
+
+        void SaveDatabase(string filename)
         {
             List<Question> questions = new List<Question>();
 
@@ -172,52 +216,103 @@ namespace L8Task1
             }
 
             SaveQuestionsToXml(filename, questions);
-
         }
-
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var questions = LoadQuestionsFromXml("base");
-
-            MessageBox.Show($"Загружено {questions.Count} вопросов");
-
-            if(questions.Count > 0)
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Question file (*.xml)|*.xml|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                DeleteAllQuestions();
-
-                var q = tblQuestions.Controls[0] as QuestEditRow;
-                q.QuestionText = questions[0].Text;
-                q.TrueFalse = questions[0].TrueFalse;
-
-                for (int i = 1; i < questions.Count; i++)
-                {
-                    AddQuestion(questions[i].Text, questions[i].TrueFalse);
-                }
-
-                selectedRow = questions.Count;
-
-                q = tblQuestions.Controls[questions.Count - 1] as QuestEditRow;
-                q.tbQuestion.Focus();
-            }            
+                dbFilename = openFileDialog.FileName;
+                if (LoadDatabase(dbFilename) == false)
+                    dbFilename = String.Empty; // unvalid file
+                UpdateDatabaseLabel();
+            }                  
         }
 
         void SaveQuestionsToXml(string filename, List<Question> list)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
-            using (Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            try
             {
-                xmlSerializer.Serialize(stream, list);
+                using (Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                {
+                    xmlSerializer.Serialize(stream, list);
+                }
+            }
+            catch
+            {
+                MessageBox.Show($"Failed to save database to {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         List<Question> LoadQuestionsFromXml(string filename)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
-            using(Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            try
             {
-                 return xmlSerializer.Deserialize(stream) as List<Question>;
+                using (Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                {
+                    return xmlSerializer.Deserialize(stream) as List<Question>;
+                }
             }
+            catch
+            {
+                MessageBox.Show($"Failed to load database from {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<Question>();
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dbFilename == String.Empty)
+            {
+                saveAsToolStripMenuItem_Click(sender, e);
+            } else
+            {
+                SaveDatabase(dbFilename);
+                UpdateDatabaseLabel(isSave: true);
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Question file (*.xml)|*.xml|All files (*.*)|*.*";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                dbFilename = saveFileDialog.FileName;
+                SaveDatabase(dbFilename);
+                UpdateDatabaseLabel(isSave: true);
+            }
+        }
+        void UpdateDatabaseLabel(bool isSave = false)
+        {
+            if (isSave)
+            {
+                lblFilename.Text = $"{FilenameFromPath(dbFilename)} saved {DateTime.Now.ToString("HH:mm:ss")}";
+            } else// Open file
+            {
+                lblFilename.Text = $"{FilenameFromPath(dbFilename)}";
+            }
+        }
+
+        string FilenameFromPath(string path)
+        {
+            int i = path.LastIndexOf('\\') + 1;
+            if (i > 0 && i < path.Length)
+                return path.Substring(i);
+            i = path.LastIndexOf('/') + 1;
+            if (i > 0 && i < path.Length)
+                return path.Substring(i);
+            return path;
+        }
+
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

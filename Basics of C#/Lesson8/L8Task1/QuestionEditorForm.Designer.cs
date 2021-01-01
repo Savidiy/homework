@@ -1,7 +1,7 @@
 ﻿
 namespace L8Task1
 {
-    partial class Form1
+    partial class QuestionEditorForm
     {
         /// <summary>
         /// Required designer variable.

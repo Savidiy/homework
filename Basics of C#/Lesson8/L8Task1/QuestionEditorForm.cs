@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace L8Task1
 {
-    public partial class Form1 : Form
+    public partial class QuestionEditorForm : Form
     {
         int selectedRow = 0; // number of selected row (start from 0) to delete Button
         string _dbFilename;
@@ -29,7 +29,7 @@ namespace L8Task1
 
         bool isLoadingDatabaseProcess = false; // block Resize events then database loading
         
-        public Form1()
+        public QuestionEditorForm()
         {
             InitializeComponent();
 
@@ -153,7 +153,7 @@ namespace L8Task1
             new AboutBox().ShowDialog();
         }
 
-        void DeleteAllQuestions()
+        void DeleteAllRowQuestions()
         {
             // блокировка отображения таблицы
             isLoadingDatabaseProcess = true; // block Resize events then database loading
@@ -182,7 +182,7 @@ namespace L8Task1
                         == DialogResult.Yes)
             {
 
-                DeleteAllQuestions();
+                DeleteAllRowQuestions();
 
                 selectedRow = 0;
 
@@ -202,13 +202,13 @@ namespace L8Task1
             if (questions.Count > 0)
             {
                 //MessageBox.Show($"Load {questions.Count} questions", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DeleteAllQuestions();
+                DeleteAllRowQuestions();
 
                 var q = tblQuestions.Controls[0] as QuestEditRow;
                 q.QuestionText = questions[0].Text;
                 q.TrueFalse = questions[0].TrueFalse;
 
-                #region Загрузка базы с ускорениями
+                #region создание строчек в таблице с ускорениями
                 /// Без хитростей база из 58 записей загружается за 2.23 сек, наверное из-за постоянных resize таблицы и текстбоксов
                 /// SuspendLayout() + ResumeLayout() - не дает улучшений
                 /// isLoadingDatabaseProcess = true - блокирует обработку события tblQuestions_Resize, 

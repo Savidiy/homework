@@ -15,16 +15,30 @@ namespace L8Task1
     public partial class Form1 : Form
     {
         int selectedRow = 0; // number of selected row (start from 0) to delete Button
-        string dbFilename = String.Empty;
+        string dbFilename = string.Empty;
+        //string DBfilename
+        //{
+        //    get { return _dbFilename; }
+        //    set
+        //    {
+        //        _dbFilename = value;
+        //        UpdateDatabaseLabel();
+        //    }
+        //}
+
+
         bool isLoadingDatabaseProcess = false; // block Resize events then database loading
         
         public Form1()
         {
             InitializeComponent();
+
             var q = tblQuestions.Controls[0] as QuestEditRow;
             q.QuestEditRowFocusedEvent += QuestEditRowFocused;
+
             tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
-            lblFilename.Text = dbFilename;
+
+            UpdateDatabaseLabel();
         }
 
         private void QuestEditRowFocused(object sender, EventArgs e)
@@ -141,6 +155,11 @@ namespace L8Task1
 
         void DeleteAllQuestions()
         {
+            // блокировка отображения таблицы
+            isLoadingDatabaseProcess = true; // block Resize events then database loading
+            tblQuestions.Visible = false;
+
+            // само удаление строк
             for (int i = tblQuestions.RowCount - 1; i > 0; i--)
             {
                 var control = tblQuestions.GetControlFromPosition(0, i);
@@ -151,6 +170,10 @@ namespace L8Task1
                 tblQuestions.RowStyles.RemoveAt(i);
             }
             tblQuestions.RowCount = 1;
+
+            // разблокировка отображения таблицы
+            isLoadingDatabaseProcess = false;
+            tblQuestions.Visible = true;
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -158,12 +181,16 @@ namespace L8Task1
             if (MessageBox.Show($"When creating a new database, all current questions will be deleted.\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         == DialogResult.Yes)
             {
+
                 DeleteAllQuestions();
 
                 selectedRow = 0;
 
+
                 var q = tblQuestions.Controls[0] as QuestEditRow;
                 q.QuestionText = "";
+                dbFilename = string.Empty;
+                UpdateDatabaseLabel();
                 q.TrueFalse = false;
                 q.tbQuestion.Focus();
             }
@@ -182,15 +209,28 @@ namespace L8Task1
                 q.QuestionText = questions[0].Text;
                 q.TrueFalse = questions[0].TrueFalse;
 
+                #region Загрузка базы с ускорениями
+                /// Без хитростей база из 58 записей загружается за 2.23 сек, наверное из-за постоянных resize таблицы и текстбоксов
+                /// SuspendLayout() + ResumeLayout() - не дает улучшений
+                /// isLoadingDatabaseProcess = true - блокирует обработку события tblQuestions_Resize, 
+                ///         которое показывает скролбар и вызывает обновление размеров текстбоксов вопросов, это сукоряет загрузку до 1.52
+                /// tblQuestions.Visible = false - скрывает таблицу на вермя загрузки записей. Время загрузки 0.65 сек
+                /// tblQuestions.Visible + isLoadingDatabaseProcess = true - дает загрузку 0.55 сек
+
+                //var now = DateTime.Now; // Считаем время загрузки базы через 
                 isLoadingDatabaseProcess = true; // block Resize events then database loading
-                this.SuspendLayout();
+                //this.SuspendLayout();
+                tblQuestions.Visible = false;
                 for (int i = 1; i < questions.Count; i++)
                 {
                     AddQuestion(questions[i].Text, questions[i].TrueFalse);
                 }
                 isLoadingDatabaseProcess = false; // block Resize events then database loading
-                this.ResumeLayout();
-                tblQuestions_Resize(this, EventArgs.Empty);
+                //tblQuestions_Resize(this, EventArgs.Empty);
+                tblQuestions.Visible = true;
+                //this.ResumeLayout()
+                // MessageBox.Show($"{DateTime.Now - now}"); // строка для анализа времени загрузки файла
+                #endregion
 
                 selectedRow = questions.Count;
 
@@ -289,12 +329,20 @@ namespace L8Task1
         }
         void UpdateDatabaseLabel(bool isSave = false)
         {
-            if (isSave)
+            if (dbFilename == string.Empty)
             {
-                lblFilename.Text = $"{FilenameFromPath(dbFilename)} saved {DateTime.Now.ToString("HH:mm:ss")}";
-            } else// Open file
+                lblFilename.Text = "file not saved";
+            }
+            else
             {
-                lblFilename.Text = $"{FilenameFromPath(dbFilename)}";
+                if (isSave)
+                {
+                    lblFilename.Text = $"{FilenameFromPath(dbFilename)} saved {DateTime.Now.ToString("HH:mm:ss")}";
+                }
+                else// Open file
+                {
+                    lblFilename.Text = $"{FilenameFromPath(dbFilename)}";
+                }
             }
         }
 

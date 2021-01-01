@@ -15,16 +15,16 @@ namespace L8Task1
     public partial class Form1 : Form
     {
         int selectedRow = 0; // number of selected row (start from 0) to delete Button
-        string dbFilename = string.Empty;
-        //string DBfilename
-        //{
-        //    get { return _dbFilename; }
-        //    set
-        //    {
-        //        _dbFilename = value;
-        //        UpdateDatabaseLabel();
-        //    }
-        //}
+        string _dbFilename;
+        string DBfilename
+        {
+            get { return _dbFilename; }
+            set
+            {
+                _dbFilename = value;
+                UpdateDatabaseLabel();
+            }
+        }
 
 
         bool isLoadingDatabaseProcess = false; // block Resize events then database loading
@@ -38,7 +38,7 @@ namespace L8Task1
 
             tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
 
-            UpdateDatabaseLabel();
+            DBfilename = string.Empty;
         }
 
         private void QuestEditRowFocused(object sender, EventArgs e)
@@ -189,8 +189,7 @@ namespace L8Task1
 
                 var q = tblQuestions.Controls[0] as QuestEditRow;
                 q.QuestionText = "";
-                dbFilename = string.Empty;
-                UpdateDatabaseLabel();
+                DBfilename = string.Empty;
                 q.TrueFalse = false;
                 q.tbQuestion.Focus();
             }
@@ -264,10 +263,9 @@ namespace L8Task1
             openFileDialog.Filter = "Question file (*.xml)|*.xml|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                dbFilename = openFileDialog.FileName;
-                if (LoadDatabase(dbFilename) == false)
-                    dbFilename = String.Empty; // unvalid file
-                UpdateDatabaseLabel();
+                DBfilename = openFileDialog.FileName;
+                if (LoadDatabase(DBfilename) == false)
+                    DBfilename = String.Empty; // unvalid file
             }                  
         }
 
@@ -306,12 +304,12 @@ namespace L8Task1
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dbFilename == String.Empty)
+            if (DBfilename == String.Empty)
             {
                 saveAsToolStripMenuItem_Click(sender, e);
             } else
             {
-                SaveDatabase(dbFilename);
+                SaveDatabase(DBfilename); 
                 UpdateDatabaseLabel(isSave: true);
             }
         }
@@ -322,14 +320,14 @@ namespace L8Task1
             saveFileDialog.Filter = "Question file (*.xml)|*.xml|All files (*.*)|*.*";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                dbFilename = saveFileDialog.FileName;
-                SaveDatabase(dbFilename);
+                DBfilename = saveFileDialog.FileName;
+                SaveDatabase(DBfilename);
                 UpdateDatabaseLabel(isSave: true);
             }
         }
         void UpdateDatabaseLabel(bool isSave = false)
         {
-            if (dbFilename == string.Empty)
+            if (DBfilename == string.Empty)
             {
                 lblFilename.Text = "file not saved";
             }
@@ -337,11 +335,11 @@ namespace L8Task1
             {
                 if (isSave)
                 {
-                    lblFilename.Text = $"{FilenameFromPath(dbFilename)} saved {DateTime.Now.ToString("HH:mm:ss")}";
+                    lblFilename.Text = $"{FilenameFromPath(DBfilename)} saved {DateTime.Now.ToString("HH:mm:ss")}";
                 }
                 else// Open file
                 {
-                    lblFilename.Text = $"{FilenameFromPath(dbFilename)}";
+                    lblFilename.Text = $"{FilenameFromPath(DBfilename)}";
                 }
             }
         }

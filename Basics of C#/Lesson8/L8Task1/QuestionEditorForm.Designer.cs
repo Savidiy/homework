@@ -32,7 +32,7 @@ namespace L8Task1
             this.tblQuestions = new System.Windows.Forms.TableLayoutPanel();
             this.questEditRow1 = new L8Task1.QuestEditRow();
             this.panelForQuestions = new System.Windows.Forms.Panel();
-            this.vsbQuestions = new System.Windows.Forms.VScrollBar();
+            this.vsbPhatomScrollbar = new System.Windows.Forms.VScrollBar();
             this.btnAddQuestion = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,21 +90,21 @@ namespace L8Task1
             this.panelForQuestions.AutoScroll = true;
             this.panelForQuestions.AutoScrollMargin = new System.Drawing.Size(0, 15);
             this.panelForQuestions.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panelForQuestions.Controls.Add(this.vsbQuestions);
+            this.panelForQuestions.Controls.Add(this.vsbPhatomScrollbar);
             this.panelForQuestions.Controls.Add(this.tblQuestions);
             this.panelForQuestions.Location = new System.Drawing.Point(0, 27);
             this.panelForQuestions.Name = "panelForQuestions";
             this.panelForQuestions.Size = new System.Drawing.Size(653, 389);
             this.panelForQuestions.TabIndex = 2;
             // 
-            // vsbQuestions
+            // vsbPhatomScrollbar
             // 
-            this.vsbQuestions.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vsbQuestions.Enabled = false;
-            this.vsbQuestions.Location = new System.Drawing.Point(636, 0);
-            this.vsbQuestions.Name = "vsbQuestions";
-            this.vsbQuestions.Size = new System.Drawing.Size(17, 389);
-            this.vsbQuestions.TabIndex = 2;
+            this.vsbPhatomScrollbar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.vsbPhatomScrollbar.Enabled = false;
+            this.vsbPhatomScrollbar.Location = new System.Drawing.Point(636, 0);
+            this.vsbPhatomScrollbar.Name = "vsbPhatomScrollbar";
+            this.vsbPhatomScrollbar.Size = new System.Drawing.Size(17, 389);
+            this.vsbPhatomScrollbar.TabIndex = 2;
             // 
             // btnAddQuestion
             // 
@@ -145,40 +145,40 @@ namespace L8Task1
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.saveAsToolStripMenuItem.Text = "Save &as";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(109, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -226,7 +226,7 @@ namespace L8Task1
             this.lblFilename.Text = "lblFilename";
             this.lblFilename.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Form1
+            // QuestionEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -240,7 +240,7 @@ namespace L8Task1
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(460, 287);
-            this.Name = "Form1";
+            this.Name = "QuestionEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Question Editor";
             this.tblQuestions.ResumeLayout(false);
@@ -267,7 +267,7 @@ namespace L8Task1
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Button btnDeleteQuestion;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.VScrollBar vsbQuestions;
+        private System.Windows.Forms.VScrollBar vsbPhatomScrollbar;
         private QuestEditRow questEditRow1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.Label lblFilename;

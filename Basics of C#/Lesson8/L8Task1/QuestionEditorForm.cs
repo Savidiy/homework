@@ -36,7 +36,7 @@ namespace L8Task1
             var q = tblQuestions.Controls[0] as QuestEditRow;
             q.QuestEditRowFocusedEvent += QuestEditRowFocused;
 
-            tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
+            tblQuestions.Width = panelForQuestions.Width - vsbPhatomScrollbar.Width;
 
             DBfilename = string.Empty;
 
@@ -46,15 +46,16 @@ namespace L8Task1
         // interface change functions
         private void AddQuestionRow(string text, bool trueFalse)
         {
+            // add control to table row
             tblQuestions.RowCount++;
             tblQuestions.RowStyles.Add(new RowStyle());
             var q = new QuestEditRow(tblQuestions.RowCount, text, trueFalse);            
             tblQuestions.Controls.Add(q, 0, tblQuestions.RowCount - 1);
             q.QuestEditRowFocusedEvent += QuestEditRowFocused;
             q.Dock = DockStyle.Top;
-            //selectedRow
 
-            if (isLoadingDatabaseProcess == false) // block Resize events then database loading
+            // block Resize events then database loading
+            if (isLoadingDatabaseProcess == false)
                 q.tbQuestion.Focus();
         }
         private void DeleteAllRowQuestions()
@@ -86,10 +87,13 @@ namespace L8Task1
         }
         private void tblQuestions_Resize(object sender, EventArgs e)
         {
-            if (isLoadingDatabaseProcess == false)
+            if (isLoadingDatabaseProcess == false) // block this functions if necessary
             {
-                vsbQuestions.Visible = !panelForQuestions.VerticalScroll.Visible;
-                tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
+                // set visibility of phantom scrollbar
+                vsbPhatomScrollbar.Visible = !panelForQuestions.VerticalScroll.Visible; 
+
+                // update row textbox size if necessary
+                tblQuestions.Width = panelForQuestions.Width - vsbPhatomScrollbar.Width;
                 foreach (var obj in tblQuestions.Controls)
                 {
                     if (obj != null)
@@ -120,9 +124,10 @@ namespace L8Task1
                     /// Без хитростей база из 58 записей загружается за 2.23 сек, наверное из-за постоянных resize таблицы и текстбоксов
                     /// SuspendLayout() + ResumeLayout() - не дает улучшений
                     /// isLoadingDatabaseProcess = true - блокирует обработку события tblQuestions_Resize, 
-                    ///         которое показывает скролбар и вызывает обновление размеров текстбоксов вопросов, это сукоряет загрузку до 1.52
-                    /// tblQuestions.Visible = false - скрывает таблицу на вермя загрузки записей. Время загрузки 0.65 сек
-                    /// tblQuestions.Visible + isLoadingDatabaseProcess = true - дает загрузку 0.55 сек
+                    ///         которое показывает скролбар и вызывает обновление размеров текстбоксов вопросов, 
+                    ///         это уcкоряет загрузку до 1.52 сек
+                    /// tblQuestions.Visible = false - скрывает таблицу на время добавления строк. Время загрузки 0.65 сек
+                    /// tblQuestions.Visible + isLoadingDatabaseProcess = true - дает загрузку за 0.55 сек
 
                     //var now = DateTime.Now; // Считаем время загрузки базы через 
                     isLoadingDatabaseProcess = true; // block Resize events then database loading
@@ -158,15 +163,16 @@ namespace L8Task1
         }
         void SaveDatabase(string filename)
         {
-            //List<Question> questions = new List<Question>();
-            trueFalseGame.Clear();
+            trueFalseGame.Clear(); // clear questions list
 
+            // add infor from texboxes to class
             foreach(var obj in tblQuestions.Controls)
             {
                 var q = obj as QuestEditRow;
                 trueFalseGame.AddQuestion(q.QuestionText, q.TrueFalse);
             }
 
+            // try save class
             if( trueFalseGame.SaveQuestionsToXml(filename) == false)
             {
                 MessageBox.Show($"Failed to save database to {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -180,7 +186,7 @@ namespace L8Task1
         }
         private void btnDeleteQuestion_Click(object sender, EventArgs e)
         {
-            if (tblQuestions.Controls.Count == 1)
+            if (tblQuestions.Controls.Count == 1) // there is one rows
             {
                 var q = tblQuestions.Controls[0] as QuestEditRow;
 
@@ -196,16 +202,15 @@ namespace L8Task1
                         q.TrueFalse = false;
                     }
                 }
-
             }
-            else
+            else // there are many rows
             {
                 if (selectedRow >= 0 && selectedRow < tblQuestions.RowCount)
                 {
                     if (MessageBox.Show($"Delete the question number {selectedRow + 1}?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         == DialogResult.Yes)
                     {
-                        // update row number
+                        // update row number from deleted to last row (decrement number)
                         for (int i = selectedRow; i < tblQuestions.RowCount; i++)
                         {
                             if (tblQuestions.Controls[i] != null)
@@ -217,7 +222,7 @@ namespace L8Task1
                         tblQuestions.Controls.RemoveAt(selectedRow);
                         selectedRow = saveSelectedRow;
 
-                        // move questions thwt below
+                        // move questions that below
                         for (int i = selectedRow + 1; i < tblQuestions.RowCount; i++)
                         {
                             var control = tblQuestions.GetControlFromPosition(0, i);
@@ -227,7 +232,7 @@ namespace L8Task1
                             }
                         }
 
-                        // focus near question
+                        // remove last row in table
                         tblQuestions.RowStyles.RemoveAt(selectedRow);
                         tblQuestions.RowCount--;
 
@@ -244,18 +249,21 @@ namespace L8Task1
         }
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"When creating a new database, all current questions will be deleted.\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        == DialogResult.Yes)
+            if (
+                MessageBox.Show($"When creating a new database, all current questions will be deleted.\r\nContinue?", 
+                    "Warning", 
+                    MessageBoxButtons.YesNo, 
+                    MessageBoxIcon.Question)
+                 == DialogResult.Yes)
             {
-
                 DeleteAllRowQuestions();
 
                 selectedRow = 0;
 
+                DBfilename = string.Empty;
 
                 var q = tblQuestions.Controls[0] as QuestEditRow;
                 q.QuestionText = "";
-                DBfilename = string.Empty;
                 q.TrueFalse = false;
                 q.tbQuestion.Focus();
             }

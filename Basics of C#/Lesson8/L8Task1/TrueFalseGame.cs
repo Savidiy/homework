@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace L8Task1
 {
@@ -24,6 +26,40 @@ namespace L8Task1
             if (index >= 0 && index < _questions.Count)
             {
                 _questions.RemoveAt(index);
+            }
+        }
+
+        public bool LoadQuestionsFromXml(string filename)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
+            try
+            {
+                using (Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                {
+                    _questions = xmlSerializer.Deserialize(stream) as List<Question>;
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool SaveQuestionsToXml(string filename)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
+            try
+            {
+                using (Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                {
+                    xmlSerializer.Serialize(stream, _questions);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+                //MessageBox.Show($"Failed to save database to {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -54,6 +90,10 @@ namespace L8Task1
         public int Count
         {
             get { return _questions.Count; }
+        }
+        public void Clear()
+        {
+            _questions.Clear();
         }
 
     }

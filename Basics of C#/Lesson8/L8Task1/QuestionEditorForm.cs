@@ -14,8 +14,6 @@ namespace L8Task1
 {
     public partial class QuestionEditorForm : Form
     {
-        int selectedRow = 0; // number of selected row (start from 0) to delete Button
-        string _dbFilename;
         string DBfilename
         {
             get { return _dbFilename; }
@@ -24,11 +22,13 @@ namespace L8Task1
                 _dbFilename = value;
                 UpdateDatabaseLabel();
             }
-        }
-
-
+        } // auto update filename interface label
+        string _dbFilename; // don't use it variables in code
+        TrueFalseGame trueFalseGame; // used to save/load xml file
+        int selectedRow = 0; // number of last selected row (start from 0) for delete Button
         bool isLoadingDatabaseProcess = false; // block Resize events then database loading
-        
+
+        // main constructor
         public QuestionEditorForm()
         {
             InitializeComponent();
@@ -39,15 +39,12 @@ namespace L8Task1
             tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
 
             DBfilename = string.Empty;
+
+            trueFalseGame = new TrueFalseGame();
         }
 
-        private void QuestEditRowFocused(object sender, EventArgs e)
-        {
-            selectedRow = (sender as QuestEditRow).Number - 1;
-            btnDeleteQuestion.Text = $"&Delete #{selectedRow + 1}"; // d - hotkey to delete
-        }
-
-        private void AddQuestion(string text, bool trueFalse)
+        // interface change functions
+        private void AddQuestionRow(string text, bool trueFalse)
         {
             tblQuestions.RowCount++;
             tblQuestions.RowStyles.Add(new RowStyle());
@@ -60,12 +57,127 @@ namespace L8Task1
             if (isLoadingDatabaseProcess == false) // block Resize events then database loading
                 q.tbQuestion.Focus();
         }
-
-        private void btnAddQuestion_Click(object sender, EventArgs e)
+        private void DeleteAllRowQuestions()
         {
-            AddQuestion("", false);
+            // блокировка отображения таблицы
+            isLoadingDatabaseProcess = true; // block Resize events then database loading
+            tblQuestions.Visible = false;
+
+            // само удаление строк
+            for (int i = tblQuestions.RowCount - 1; i > 0; i--)
+            {
+                var control = tblQuestions.GetControlFromPosition(0, i);
+                if (control != null)
+                {
+                    tblQuestions.Controls.RemoveAt(i);
+                }
+                tblQuestions.RowStyles.RemoveAt(i);
+            }
+            tblQuestions.RowCount = 1;
+
+            // разблокировка отображения таблицы
+            isLoadingDatabaseProcess = false;
+            tblQuestions.Visible = true;
+        }
+        private void QuestEditRowFocused(object sender, EventArgs e)
+        {
+            selectedRow = (sender as QuestEditRow).Number - 1;
+            btnDeleteQuestion.Text = $"&Delete #{selectedRow + 1}"; // d - hotkey to delete
+        }
+        private void tblQuestions_Resize(object sender, EventArgs e)
+        {
+            if (isLoadingDatabaseProcess == false)
+            {
+                vsbQuestions.Visible = !panelForQuestions.VerticalScroll.Visible;
+                tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
+                foreach (var obj in tblQuestions.Controls)
+                {
+                    if (obj != null)
+                    {
+                        var q = obj as QuestEditRow;
+                        q.QuestionTextChanged();
+                    }
+                }
+            }
         }
 
+        // database operations
+        bool LoadDatabase(string filename)
+        {
+            if (trueFalseGame.LoadQuestionsFromXml(filename))
+            {
+                int count = trueFalseGame.Count;
+                if (count > 0)
+                {
+                    //MessageBox.Show($"Load {questions.Count} questions", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DeleteAllRowQuestions();
+
+                    var q = tblQuestions.Controls[0] as QuestEditRow;
+                    q.QuestionText = trueFalseGame[0].Text;
+                    q.TrueFalse = trueFalseGame[0].TrueFalse;
+
+                    #region создание строчек в таблице с ускорениями
+                    /// Без хитростей база из 58 записей загружается за 2.23 сек, наверное из-за постоянных resize таблицы и текстбоксов
+                    /// SuspendLayout() + ResumeLayout() - не дает улучшений
+                    /// isLoadingDatabaseProcess = true - блокирует обработку события tblQuestions_Resize, 
+                    ///         которое показывает скролбар и вызывает обновление размеров текстбоксов вопросов, это сукоряет загрузку до 1.52
+                    /// tblQuestions.Visible = false - скрывает таблицу на вермя загрузки записей. Время загрузки 0.65 сек
+                    /// tblQuestions.Visible + isLoadingDatabaseProcess = true - дает загрузку 0.55 сек
+
+                    //var now = DateTime.Now; // Считаем время загрузки базы через 
+                    isLoadingDatabaseProcess = true; // block Resize events then database loading
+                    tblQuestions.Visible = false;
+                    //this.SuspendLayout();
+                    for (int i = 1; i < count; i++)
+                    {
+                        AddQuestionRow(trueFalseGame[i].Text, trueFalseGame[i].TrueFalse);
+                    }
+                    isLoadingDatabaseProcess = false; // block Resize events then database loading
+                    tblQuestions.Visible = true;
+                    //this.ResumeLayout()
+                    //tblQuestions_Resize(this, EventArgs.Empty);
+                    // MessageBox.Show($"{DateTime.Now - now}"); // строка для анализа времени загрузки файла
+                    #endregion
+
+                    selectedRow = count - 1;
+
+                    q = tblQuestions.Controls[count - 1] as QuestEditRow;
+                    q.tbQuestion.Focus();
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show($"There are no questions in the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            } else
+            {
+                MessageBox.Show($"Failed to load database from {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }           
+        }
+        void SaveDatabase(string filename)
+        {
+            //List<Question> questions = new List<Question>();
+            trueFalseGame.Clear();
+
+            foreach(var obj in tblQuestions.Controls)
+            {
+                var q = obj as QuestEditRow;
+                trueFalseGame.AddQuestion(q.QuestionText, q.TrueFalse);
+            }
+
+            if( trueFalseGame.SaveQuestionsToXml(filename) == false)
+            {
+                MessageBox.Show($"Failed to save database to {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // button and menu events
+        private void btnAddQuestion_Click(object sender, EventArgs e)
+        {
+            AddQuestionRow("", false);
+        }
         private void btnDeleteQuestion_Click(object sender, EventArgs e)
         {
             if (tblQuestions.Controls.Count == 1)
@@ -130,52 +242,6 @@ namespace L8Task1
                 }
             }
         }
-
-        private void tblQuestions_Resize(object sender, EventArgs e)
-        {
-            if (isLoadingDatabaseProcess == false)
-            {
-                vsbQuestions.Visible = !panelForQuestions.VerticalScroll.Visible;
-                tblQuestions.Width = panelForQuestions.Width - vsbQuestions.Width;
-                foreach (var obj in tblQuestions.Controls)
-                {
-                    if (obj != null)
-                    {
-                        var q = obj as QuestEditRow;
-                        q.QuestionTextChanged();
-                    }
-                }
-            }
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AboutBox().ShowDialog();
-        }
-
-        void DeleteAllRowQuestions()
-        {
-            // блокировка отображения таблицы
-            isLoadingDatabaseProcess = true; // block Resize events then database loading
-            tblQuestions.Visible = false;
-
-            // само удаление строк
-            for (int i = tblQuestions.RowCount - 1; i > 0; i--)
-            {
-                var control = tblQuestions.GetControlFromPosition(0, i);
-                if (control != null)
-                {
-                    tblQuestions.Controls.RemoveAt(i);
-                }
-                tblQuestions.RowStyles.RemoveAt(i);
-            }
-            tblQuestions.RowCount = 1;
-
-            // разблокировка отображения таблицы
-            isLoadingDatabaseProcess = false;
-            tblQuestions.Visible = true;
-        }
-
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show($"When creating a new database, all current questions will be deleted.\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -194,69 +260,6 @@ namespace L8Task1
                 q.tbQuestion.Focus();
             }
         }
-
-        bool LoadDatabase(string filename)
-        {
-            var questions = LoadQuestionsFromXml(filename);
-
-            if (questions.Count > 0)
-            {
-                //MessageBox.Show($"Load {questions.Count} questions", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DeleteAllRowQuestions();
-
-                var q = tblQuestions.Controls[0] as QuestEditRow;
-                q.QuestionText = questions[0].Text;
-                q.TrueFalse = questions[0].TrueFalse;
-
-                #region создание строчек в таблице с ускорениями
-                /// Без хитростей база из 58 записей загружается за 2.23 сек, наверное из-за постоянных resize таблицы и текстбоксов
-                /// SuspendLayout() + ResumeLayout() - не дает улучшений
-                /// isLoadingDatabaseProcess = true - блокирует обработку события tblQuestions_Resize, 
-                ///         которое показывает скролбар и вызывает обновление размеров текстбоксов вопросов, это сукоряет загрузку до 1.52
-                /// tblQuestions.Visible = false - скрывает таблицу на вермя загрузки записей. Время загрузки 0.65 сек
-                /// tblQuestions.Visible + isLoadingDatabaseProcess = true - дает загрузку 0.55 сек
-
-                //var now = DateTime.Now; // Считаем время загрузки базы через 
-                isLoadingDatabaseProcess = true; // block Resize events then database loading
-                //this.SuspendLayout();
-                tblQuestions.Visible = false;
-                for (int i = 1; i < questions.Count; i++)
-                {
-                    AddQuestion(questions[i].Text, questions[i].TrueFalse);
-                }
-                isLoadingDatabaseProcess = false; // block Resize events then database loading
-                //tblQuestions_Resize(this, EventArgs.Empty);
-                tblQuestions.Visible = true;
-                //this.ResumeLayout()
-                // MessageBox.Show($"{DateTime.Now - now}"); // строка для анализа времени загрузки файла
-                #endregion
-
-                selectedRow = questions.Count;
-
-                q = tblQuestions.Controls[questions.Count - 1] as QuestEditRow;
-                q.tbQuestion.Focus();
-                return true;
-            } 
-            else
-            {
-                MessageBox.Show($"There are no questions in the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-        }
-
-        void SaveDatabase(string filename)
-        {
-            List<Question> questions = new List<Question>();
-
-            foreach(var obj in tblQuestions.Controls)
-            {
-                var q = obj as QuestEditRow;
-                questions.Add(new Question(q.QuestionText, q.TrueFalse));
-            }
-
-            SaveQuestionsToXml(filename, questions);
-        }
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -268,40 +271,6 @@ namespace L8Task1
                     DBfilename = String.Empty; // unvalid file
             }                  
         }
-
-        void SaveQuestionsToXml(string filename, List<Question> list)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
-            try
-            {
-                using (Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
-                {
-                    xmlSerializer.Serialize(stream, list);
-                }
-            }
-            catch
-            {
-                MessageBox.Show($"Failed to save database to {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        List<Question> LoadQuestionsFromXml(string filename)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Question>));
-            try
-            {
-                using (Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                {
-                    return xmlSerializer.Deserialize(stream) as List<Question>;
-                }
-            }
-            catch
-            {
-                MessageBox.Show($"Failed to load database from {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return new List<Question>();
-            }
-        }
-
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DBfilename == String.Empty)
@@ -313,7 +282,6 @@ namespace L8Task1
                 UpdateDatabaseLabel(isSave: true);
             }
         }
-
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -325,6 +293,16 @@ namespace L8Task1
                 UpdateDatabaseLabel(isSave: true);
             }
         }
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutBox().ShowDialog();
+        }
+
+        // additional functions
         void UpdateDatabaseLabel(bool isSave = false)
         {
             if (DBfilename == string.Empty)
@@ -343,7 +321,6 @@ namespace L8Task1
                 }
             }
         }
-
         string FilenameFromPath(string path)
         {
             int i = path.LastIndexOf('\\') + 1;
@@ -353,12 +330,6 @@ namespace L8Task1
             if (i > 0 && i < path.Length)
                 return path.Substring(i);
             return path;
-        }
-
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
         }
     }
 }

@@ -108,6 +108,7 @@ namespace L8Task2
             // 
             // lblScore
             // 
+            this.lblScore.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblScore.Location = new System.Drawing.Point(142, 4);
             this.lblScore.Name = "lblScore";
             this.lblScore.Size = new System.Drawing.Size(202, 21);

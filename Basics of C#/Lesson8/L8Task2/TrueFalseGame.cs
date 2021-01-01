@@ -44,7 +44,7 @@ namespace L8Task2
 
         public bool NewGame(int howManyQuestions)
         {
-            if (isLoaded && howManyQuestions < _questions.Count)
+            if (isLoaded && howManyQuestions <= _questions.Count)
             {
                 HowManyQuestionsInGame = howManyQuestions;
                 selectedQuestions = new int[HowManyQuestionsInGame];

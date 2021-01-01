@@ -13,9 +13,9 @@ namespace L8Task2
     public partial class TrueFalseForm : Form
     {
         TrueFalseGame trueFalseGame;
-        int countQuestionsInGame = 5;
-        int questionIndex = 0;
-        int currentQuestionNumber = 0;
+        int countQuestionsInGame = 5; // количество вопросоа в сессии
+        int questionIndex = 0; // номер вопроса в сессии
+        int currentQuestionDatabaseIndex = 0; // номер вопроса в базы
         int _score = 0; // don't use in code
         int Score
         {
@@ -34,7 +34,7 @@ namespace L8Task2
             trueFalseGame = new TrueFalseGame(AppDomain.CurrentDomain.BaseDirectory + "Database.xml");
         }
 
-
+        // interface
         void ShowTrueFalseButtons()
         {
             btnFalse.Visible = true;
@@ -54,6 +54,7 @@ namespace L8Task2
             lblScore.Text = $"Правильных ответов {Score} из {trueFalseGame.HowManyQuestionsInGame}";
         }
 
+        // game logic
         void NewGame()
         {
             trueFalseGame.NewGame(countQuestionsInGame);
@@ -70,12 +71,12 @@ namespace L8Task2
         }
         void TakeAnswer(bool isTrue)
         {
-            if(trueFalseGame.TakeAnswer(currentQuestionNumber, isTrue))
+            if(trueFalseGame.TakeAnswer(currentQuestionDatabaseIndex, isTrue))
             {
                 Score++;
             }
             
-            if (questionIndex >= countQuestionsInGame) // end game
+            if (questionIndex >= trueFalseGame.HowManyQuestionsInGame) // end game
             {
                 EndGame();
             } 
@@ -86,11 +87,10 @@ namespace L8Task2
         }
         void ShowNextQuestion()
         {
-            currentQuestionNumber = trueFalseGame.NextQuestionNumber();
-            lblBaseText.Text = $"{questionIndex + 1}. {trueFalseGame[currentQuestionNumber]}";
+            currentQuestionDatabaseIndex = trueFalseGame.NextQuestionNumber();
+            lblBaseText.Text = $"{questionIndex + 1}. {trueFalseGame[currentQuestionDatabaseIndex]}";
             questionIndex++;
         }
-
 
         // button events
         private void btnTrue_Click(object sender, EventArgs e)
@@ -113,7 +113,14 @@ namespace L8Task2
         }
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SettingsForm settingsForm = new SettingsForm();
+            settingsForm.MaxQuestions = trueFalseGame.Count;
+            settingsForm.CountQuestionsInGame = countQuestionsInGame;
 
+            if (settingsForm.ShowDialog() == DialogResult.OK)
+            {
+                countQuestionsInGame = settingsForm.CountQuestionsInGame;
+            }
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {

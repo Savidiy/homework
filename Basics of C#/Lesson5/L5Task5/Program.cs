@@ -24,7 +24,6 @@ namespace L5Task5
             IsTrue = isTrue;
             Text = text;
         }
-
     }
     class TrueFalse
     {
